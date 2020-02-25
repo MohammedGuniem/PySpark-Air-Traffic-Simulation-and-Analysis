@@ -3,29 +3,39 @@ from pyspark.sql.functions import col, collect_set, array_contains, size, first,
 
 spark = SparkSession \
     .builder \
-    .appName("Python Spark SQL analyse delay") \
+    .appName("Python Spark SQL analyse delay by route from origin to destination") \
     .config("spark.some.config.option", "some-value") \
     .getOrCreate()
 
 spark.sparkContext.setLogLevel('FATAL')
 
 df = spark.read.csv("data/2019_01.csv",header=True,sep=",")
+
 df = df.fillna( { 'CARRIER_DELAY':0,'WEATHER_DELAY':0,'NAS_DELAY':0,'SECURITY_DELAY':0,'LATE_AIRCRAFT_DELAY':0 } )
 
-rowCount = (df.groupBy('DEST_STATE_NM').agg(_mean('WEATHER_DELAY').alias('Average weather delay per destination state in minutes'))).count()
+route_delay_df = df.withColumn("Route", struct(col("ORIGIN_STATE_NM"), col("DEST_STATE_NM"))).groupBy('Route')
 
-dest_delay_df = df.withColumn("Route", struct(col("ORIGIN_STATE_NM"), col("DEST_STATE_NM"))).groupBy('Route')
+showRowCount = 10
 
-#(dest_delay_df.agg(_sum('WEATHER_DELAY').alias("1"),_mean('WEATHER_DELAY').alias('2'),_sum('CARRIER_DELAY').alias("3"),_mean('CARRIER_DELAY').alias('4')).sort(asc("DEST_STATE_NM"))).toDF('Destination state','total sum of weather delay in minutes','avg sum of weather delay in minutes','total sum of carrier delay in minutes','avg sum of carrier delay in minutes').show(rowCount, False)
+weather_delay_df = (route_delay_df.agg(_sum('WEATHER_DELAY').alias("1"),_mean('WEATHER_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','Sum','average')
+print("Weather delay in minutes")
+weather_delay_df.show(showRowCount, False)
 
-(dest_delay_df.agg(_sum('WEATHER_DELAY').alias("1"),_mean('WEATHER_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','total sum of weather delay in minutes','avg sum of weather delay in minutes').show(rowCount, False)
+carrier_delay_df = (route_delay_df.agg(_sum('CARRIER_DELAY').alias("1"),_mean('CARRIER_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','Sum','average')
+print("Carrier delay in minutes")
+carrier_delay_df.show(showRowCount, False)
 
-(dest_delay_df.agg(_sum('CARRIER_DELAY').alias("1"),_mean('CARRIER_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','total sum of carrier delay in minutes','avg sum of carrier delay in minutes').show(rowCount, False)
+nas_delay_df = (route_delay_df.agg(_sum('NAS_DELAY').alias("1"),_mean('NAS_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','Sum','average')
+print("NAS delay in minutes")
+nas_delay_df.show(showRowCount, False)
 
-(dest_delay_df.agg(_sum('NAS_DELAY').alias("1"),_mean('NAS_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','total sum of NAS delay in minutes','avg sum of NAS delay in minutes').show(rowCount, False)
+security_delay_df = (route_delay_df.agg(_sum('SECURITY_DELAY').alias("1"),_mean('SECURITY_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','Sum','average')
+print("Security delay in minutes")
+security_delay_df.show(showRowCount, False)
 
-(dest_delay_df.agg(_sum('SECURITY_DELAY').alias("1"),_mean('SECURITY_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','total sum of security delay in minutes','avg sum of security delay in minutes').show(rowCount, False)
+late_aircraft_delay_df = (route_delay_df.agg(_sum('LATE_AIRCRAFT_DELAY').alias("1"),_mean('LATE_AIRCRAFT_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','Sum','average')
+print("Late aircraft delay in minutes")
+late_aircraft_delay_df.show(showRowCount, False)
 
-(dest_delay_df.agg(_sum('LATE_AIRCRAFT_DELAY').alias("1"),_mean('LATE_AIRCRAFT_DELAY').alias('2')).sort(desc("1"))).toDF('Route [From state, To state]','total sum of late aircraft delay in minutes','avg sum of late aircraft delay in minutes').show(rowCount, False)
-
-print("The row count for weather delay is: ", rowCount)
+totalNumberOfUniqueRoutes = weather_delay_df.count()
+print("The total number of unique routes is: " + str(totalNumberOfUniqueRoutes))
