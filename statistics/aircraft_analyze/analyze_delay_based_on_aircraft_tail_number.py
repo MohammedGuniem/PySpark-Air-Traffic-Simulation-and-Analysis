@@ -1,15 +1,25 @@
 from pyspark.sql import SparkSession
+from pyspark import SparkContext, SparkConf
 from pyspark.sql.functions import col, collect_set, array_contains, size, first, sum as _sum, mean as _mean, desc, asc, count
+import os
 
-spark = SparkSession \
-    .builder \
-    .appName("Python Spark SQL to analyze delays based on aircraft irrespective of route, origin or destination") \
-    .config("spark.some.config.option", "some-value") \
-    .getOrCreate()
+#spark = SparkSession \
+ #   .builder \
+  #  .appName("Python Spark SQL to analyze delays based on aircraft irrespective of route, origin or destination") \
+   # .config("spark.some.config.option", "some-value") \
+    #.getOrCreate()
 
-spark.sparkContext.setLogLevel('FATAL')
+sc = SparkContext()
 
-df = spark.read.csv("data/2019_01.csv",header=True,sep=",")
+sc.setLogLevel('FATAL')
+
+from pyspark.sql import SQLContext
+
+sqlContext = SQLContext(sc)
+
+df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load('hdfs://master:9000/dataset/2019_01.csv')
+
+#df = spark.read.csv("hdfs://cluster/user/hdfs/dataset/2019_01.csv",header=True,sep=",")
 
 df = df.fillna( { 'CARRIER_DELAY':0,'WEATHER_DELAY':0,'NAS_DELAY':0,'SECURITY_DELAY':0,'LATE_AIRCRAFT_DELAY':0 } )
 
