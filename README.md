@@ -1,6 +1,10 @@
 # dat500_project
 
-## Follow the steps below to get started with this repository
+## At first you need to clone this repository to your local machine using the following command
+
+git clone https://github.com/MohammedGuniem/dat500_project.git
+
+## Follow the steps below to push changes to this repository
 
 ### Since we are only 2 in this project, we will skip using branches and push directly to master branch, the following command is used to make sure we are on the master branch
 gi checkout master
