@@ -1,15 +1,15 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, collect_set, array_contains, size, first, sum as _sum, mean as _mean, desc, asc, count, struct
+from pyspark import SparkContext, SparkConf
+from pyspark.sql.functions import col, collect_set, array_contains, size, first, sum as _sum, mean as _mean, desc, asc, count
+from pyspark.sql import SQLContext
 
-spark = SparkSession \
-    .builder \
-    .appName("Python Spark SQL analyse delay by route from origin city to destination city") \
-    .config("spark.some.config.option", "some-value") \
-    .getOrCreate()
+sc = SparkContext()
 
-spark.sparkContext.setLogLevel('FATAL')
+sc.setLogLevel('FATAL')
 
-df = spark.read.csv("data/2019_01.csv",header=True,sep=",")
+sqlContext = SQLContext(sc)
+
+df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load('hdfs://master:9000/dataset/*.csv')
 
 df = df.fillna( { 'CARRIER_DELAY':0,'WEATHER_DELAY':0,'NAS_DELAY':0,'SECURITY_DELAY':0,'LATE_AIRCRAFT_DELAY':0 } )
 
