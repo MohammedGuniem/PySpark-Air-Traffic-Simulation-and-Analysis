@@ -2,8 +2,8 @@
 
 ## Follow the steps below to get started with this repository
 
-### At first you need to create a new branch, this is done only once you try to do the first push
-gi checkout -b <Your-prefered-branch-name>
+### Since we are only 2 in this project, we will skip using branches and push directly to master branch, the following command is used to make sure we are on the master branch
+gi checkout master
 
 ### To push a single file, simply add it using the add command
 git add file_name.txt
@@ -23,7 +23,7 @@ git push
 ## Follow the steps below to pull in changes from master
 
 ### Set the upstream, this is done only once you try to do the first pull
-git branch --set-upstream-to=origin/master <your-branch-name>
+git branch --set-upstream-to=origin/master master
   
 ### pull changes from master branch
 git pull
