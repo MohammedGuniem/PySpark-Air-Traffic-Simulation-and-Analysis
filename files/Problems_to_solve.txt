@@ -13,6 +13,10 @@ where 5 is the most heavy simulation model and 1 is the least heavy model in air
 3- Statistics
 Problem: We are lookig for some answers from these data
 
-Which routes between to states and 2 cities has the most delays and the least delays?
-What is the origin and destinations with most delays and the least delays?
-Which airplane with (tail number) with the most delays and the least?
+a) Which routes between two states, two cities and two airports has the most delays and the least delays?
+
+b) What are the delays for states, cities and airports at the origins of the routes irrespective of route and destination?
+
+c) What are the delays for states, cities and airports at the destinations of the routes irrespective of route and origin?
+
+d) Which aircraft with a certain tail number has the most and the least delays?
