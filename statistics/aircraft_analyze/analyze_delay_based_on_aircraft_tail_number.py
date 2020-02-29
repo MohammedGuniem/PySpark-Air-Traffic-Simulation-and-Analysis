@@ -15,26 +15,26 @@ df = df.fillna( { 'CARRIER_DELAY':0,'WEATHER_DELAY':0,'NAS_DELAY':0,'SECURITY_DE
 
 showRowCount = 10
 
-aircraft_delay_df = df.groupBy('TAIL_NUM')
+aircraft_delay_df = df.withColumn("TOTAL_DELAY", col("WEATHER_DELAY")+col("CARRIER_DELAY")+col('NAS_DELAY')+col('SECURITY_DELAY')+col('LATE_AIRCRAFT_DELAY')).groupBy('TAIL_NUM')
 
-print("Weather delay")
-aircraft_weather_delay = (aircraft_delay_df.agg(_sum('WEATHER_DELAY').alias("1"),_mean('WEATHER_DELAY').alias('2')).sort(desc("1"))).toDF('Aircraft Tail Number','Total Sum','Average')
-aircraft_weather_delay.show(showRowCount, False)
+aircraft_delay_df = aircraft_delay_df.agg(
+		_sum('TOTAL_DELAY').alias('SUM_OF_ALL_DELAYS'),_mean('TOTAL_DELAY').alias('AVERAGE_OF_ALL_DELAYS'),
+		_sum('WEATHER_DELAY').alias("SUM_OF_WEATHER_DELAY"),_mean('WEATHER_DELAY').alias('AVERAGE_OF_WEATHER_DELAY'),
+		_sum('CARRIER_DELAY').alias("SUM_OF_CARRIER_DELAY"),_mean('CARRIER_DELAY').alias('AVERAGE_OF_CARRIER_DELAY'),
+		_sum('NAS_DELAY').alias("SUM_OF_NAS_DELAY"),_mean('NAS_DELAY').alias('AVERAGE_OF_NAS_DELAY'),
+		_sum('SECURITY_DELAY').alias("SUM_OF_SECURITY_DELAY"),_mean('SECURITY_DELAY').alias('AVERAGE_OF_SECURITY_DELAY'),
+		_sum('LATE_AIRCRAFT_DELAY').alias("SUM_OF_LATE_AIRCRAFT_DELAY"),_mean('LATE_AIRCRAFT_DELAY').alias('AVERAGE_OF_LATE_AIRCRAFT_DELAY'),
+	).sort(desc("SUM_OF_ALL_DELAYS"))
 
-print("Carrier delay")
-aircraft_carrier_delay = (aircraft_delay_df.agg(_sum('CARRIER_DELAY').alias("1"),_mean('CARRIER_DELAY').alias('2')).sort(desc("1"))).toDF('Aircraft Tail Number','Total Sum','Average')
-aircraft_carrier_delay.show(showRowCount, False)
+aircraft_delay_df.show(showRowCount, False)
 
-print("NAS delay")
-aircraft_nas_delay = (aircraft_delay_df.agg(_sum('NAS_DELAY').alias("1"),_mean('NAS_DELAY').alias('2')).sort(desc("1"))).toDF('Aircraft Tail Number','Total Sum','Average')
-aircraft_nas_delay.show(showRowCount, False)
+print("The total number of aircrafts in origin is: " + str(aircraft_delay_df.count()))
 
-print("Security delay")
-aircraft_security_delay = (aircraft_delay_df.agg(_sum('SECURITY_DELAY').alias("1"),_mean('SECURITY_DELAY').alias('2')).sort(desc("1"))).toDF('Aircraft Tail Number','Total Sum','Average')
-aircraft_security_delay.show(showRowCount, False)
+print("Writing to csv files on hdfs ...")
 
-print("Late aircraft delay")
-aircraft_late_aircraft_delay = (aircraft_delay_df.agg(_sum('LATE_AIRCRAFT_DELAY').alias("1"),_mean('LATE_AIRCRAFT_DELAY').alias('2')).sort(desc("1"))).toDF('Aircraft Tail Number','Total Sum','Average')
-aircraft_late_aircraft_delay.show(showRowCount, False)
+#aircraft_delay_df.repartition(1).write.csv('hdfs://master:9000/statistics/aircraft_analyze/analyze_aircraft_delay')
 
-print("The total number of aircrafts in origin is: " + str(aircraft_weather_delay.count()))
+aircraft_delay_df.repartition(1).write.csv('analyze_aircraft_delay', header = 'true')
+
+print("done")
+
