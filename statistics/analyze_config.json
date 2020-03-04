@@ -73,10 +73,10 @@
         },
         {
             "description": "Analyzing delay times based on route between 2 states as a target",
-            "target_column": "ROUTE BETWEEN STATES",
+            "target_column": "ROUTE_BETWEEN_STATES",
             "target_type": "merged",
             "target_components": ["ORIGIN_STATE_NM", "DEST_STATE_NM"],
-            "target_separator": "->",
+            "target_separator": " -> ",
             "target_name": "routes between 2 states",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/analyze_route_between_2_states_delay",
@@ -85,10 +85,10 @@
         },
         {
             "description": "Analyzing delay times based on route between 2 citites as a target",
-            "target_column": "ROUTE BETWEEN CITIES",
+            "target_column": "ROUTE_BETWEEN_CITIES",
             "target_type": "merged",
             "target_components": ["ORIGIN_CITY_NAME", "DEST_CITY_NAME"],
-            "target_separator": "->",
+            "target_separator": " -> ",
             "target_name": "routes between 2 cities",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/analyze_route_between_2_cities_delay",
@@ -97,10 +97,10 @@
         },
         {
             "description": "Analyzing delay times based on route between 2airports as a target",
-            "target_column": "ROUTE BETWEEN AIRPORTS",
+            "target_column": "ROUTE_BETWEEN_AIRPORTS",
             "target_type": "merged",
             "target_components": ["ORIGIN", "DEST"],
-            "target_separator": "->",
+            "target_separator": " -> ",
             "target_name": "routes between 2 airports",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/analyze_route_between_2_airports_delay",

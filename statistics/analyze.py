@@ -62,4 +62,3 @@ for target in config["analyze_targets"]:
     delay_df.repartition(1).write.csv(local_csv_writing_paths, header = 'true')
 
     print("Done: " + description)
-
