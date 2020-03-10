@@ -1,0 +1,8 @@
+We can use this link to download a file that contains the coordinates of each airport
+https://datahub.io/core/airport-codes
+
+This might be more better data about airport coordinates.
+https://openflights.org/data.html
+
+Here is a link that explains how to get the route between 2 airport coordinates using the basemap package in python
+https://towardsdatascience.com/planning-to-travel-around-the-world-with-python-42fac1d21a6e
