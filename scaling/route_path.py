@@ -1,14 +1,14 @@
-from mpl_toolkits.basemap import Basemap
+class Path_finder:
 
-m = Basemap(llcrnrlon=-180,llcrnrlat=10,urcrnrlon=-50,urcrnrlat=70, lat_ts=0, resolution='l')
+     def __init__(self):
+          from mpl_toolkits.basemap import Basemap
+          self.map = Basemap(llcrnrlon=-180,llcrnrlat=10,urcrnrlon=-50,urcrnrlat=70, lat_ts=0, resolution='l')
 
-Points = {"New York":(40.7,-74),"San Francisco":(37.8,-122.4)}
-Lon = [Points[key][0] for key in Points]
-Lat = [Points[key][1] for key in Points]
-Longs, Lats = m(Lat,Lon)
 
-print("Route Longs: " + str(Longs))
-print("Route Lats: " + str(Lats))
-Longs, Lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],3)
-print("Longs: " + str(Longs))
-print("Lats: " + str(Lats))
+     def find_route(self, source_lat, source_lon, target_lat, target_lon, distance_in_miles):
+          Longs, Lats = self.map.gcpoints(source_lon, source_lat, target_lon, target_lat, distance_in_miles/40)
+          return Longs, Lats
+
+t = Path_finder()
+
+print(t.find_route(40.63980103, -73.77890015, 37.61899948120117, -122.375, 2572))
