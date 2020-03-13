@@ -35,12 +35,12 @@ scaling_df = scaling_df.filter(scaling_df.WHEELS_ON.between(1720,1840))
 print("count after filtering between departure time and arrival time: ", scaling_df.count())
 
 def find_route_path(source_airport_code, destination_airport_code, distance_in_miles):
-    #area_map = Basemap(llcrnrlon=-180, llcrnrlat=10, urcrnrlon=-50, urcrnrlat=70, lat_ts=0, resolution='l')
+    area_map = Basemap(llcrnrlon=-180, llcrnrlat=10, urcrnrlon=-50, urcrnrlat=70, lat_ts=0, resolution='l')
     #Longs, Lats = area_map.gcpoints(source_lon, source_lat, target_lon, target_lat, distance_in_miles/40) #40.63980103, -73.77890015, 37.61899948120117, -122.375
 
-    #Longs, Lats = area_map.gcpoints(-73.77890015, 40.63980103, -122.375, 37.61899948120117, distance_in_miles/40)
-    #return "{Longs: '" + str(Longs).replace(", ", "->") + "', Lats: '" + str(Lats).replace(", ", "->") + "'}"
-    return "SAC-" + str(source_airport_code) + "DAC-" + str(destination_airport_code) + "DIM-" + str(distance_in_miles)
+    Longs, Lats = area_map.gcpoints(-73.77890015, 40.63980103, -122.375, 37.61899948120117, 100) #distance_in_mile/40)
+    return "{Longs: '" + str(Longs).replace(", ", "->") + "', Lats: '" + str(Lats).replace(", ", "->") + "'}"
+    #return "SAC-" + str(source_airport_code) + "DAC-" + str(destination_airport_code) + "DIM-" + str(distance_in_miles) + "-NoP-" + str(distance_in_miles/40)
 
 udf_find_route_path = udf(find_route_path, StringType())
 
