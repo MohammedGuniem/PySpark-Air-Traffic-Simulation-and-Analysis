@@ -1,0 +1,29 @@
+1. Statistics:
+a- Calculate the median, mode, max.- and min.- of delays and maybe other basic statistics if we have time
+b- Make a power BI model, that uses all the generated data.
+c- Write a report part or description of the task, and we also how we solved the problem (Why and How we solved the problemand what is the results)
+
+2. Scaling:
+a- Importing airport coordinates into our dataset
+b- Finish the scaling task
+c- description and report part, same as (1-c)
+
+3. Delay Perdiction:
+a- Clustering the delays into categories using PySpark, like category A(0-10), B(10-20), C(30-40), ........ Z(200-210)
+b- Descision tree using the build descision tree classifier in PySpark. train with 70% of the data and run prediction for 30% and then calculate how accurate our model.
+c- Random forest prediction in the same described in (3-b) above.
+d- XGBoost prediction in the same described in (3-b) above.
+c- Store the prediction training in flash non-volitaile meomory on hdfs. so we make preedication without having to run the exprensive training.
+d- Description and report part, same as in (1-c)
+
+4- Documentation
+Setup documentation:
+a- Hadoop Cluser, We need to document what link we used as a guide
+b- PySpark Cluster, We do to document this
+c- Basemap, we do to docuement this as well.
+d- Other installed libraries should also be docuemnted here?????!!!!!
+
+5- Finishing the report 
+a- Merging all parts
+b- Read the report and find mistakes then correct them
+c- Convert to the accepted format and then submit

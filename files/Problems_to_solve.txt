@@ -1,6 +1,6 @@
 1- predication
 Problem: We need to predict delays?
-Trying and comparing different machine algorithms like K-means, descision trees, XGboost etc... to produce the most suitable model for predication of flight delays. 
+Trying and comparing different machine algorithms like Random forest, descision trees, XGboost etc... to produce the most suitable model for predication of flight delays. 
 
 2- Scaling
 Problem: Building a simulation model that lets the user descide how many routes to show at the same time
