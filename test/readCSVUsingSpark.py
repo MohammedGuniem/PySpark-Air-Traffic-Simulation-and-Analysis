@@ -19,6 +19,19 @@ df.withColumn("Combination", struct(col("ID"), col("Type"))).groupBy('Combinatio
 
 df.withColumn('Combination', struct(col('ID'), col('Type'))).groupBy('Combination').agg(_mean('Value').alias('Mean of Value')).show()
 
+
+
+from pyspark.sql.types import StringType
+from pyspark.sql.functions import udf
+
+def find_route_path(arg1,arg2):
+    return arg1 + "-" + arg2
+
+udf_find_route_path = udf(find_route_path, StringType())
+
+df.withColumn("ROUTE_PATH", udf_find_route_path("Value", "Type")).show() 
+
+
 """
 df.limit(2).show()
 

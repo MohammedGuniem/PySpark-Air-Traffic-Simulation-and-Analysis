@@ -1,7 +1,9 @@
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
-from pyspark.sql.functions import col, collect_set, array_contains, size, first, sum as _sum, mean as _mean, desc, asc, count, concat_ws
+from pyspark.sql.functions import udf, col, collect_set, array_contains, size, first, sum as _sum, mean as _mean, desc, asc, count, concat_ws
+from pyspark.sql.types import StringType
 from pyspark.sql import SQLContext
+from mpl_toolkits.basemap import Basemap
 
 sc = SparkContext()
 
@@ -32,7 +34,19 @@ scaling_df = scaling_df.filter(scaling_df.WHEELS_ON.between(1720,1840))
 
 print("count after filtering between departure time and arrival time: ", scaling_df.count())
 
-scaling_df.show(showRowCount, False)
+def find_route_path(source_airport_code, destination_airport_code, distance_in_miles):
+    #area_map = Basemap(llcrnrlon=-180, llcrnrlat=10, urcrnrlon=-50, urcrnrlat=70, lat_ts=0, resolution='l')
+    #Longs, Lats = area_map.gcpoints(source_lon, source_lat, target_lon, target_lat, distance_in_miles/40) #40.63980103, -73.77890015, 37.61899948120117, -122.375
+
+    #Longs, Lats = area_map.gcpoints(-73.77890015, 40.63980103, -122.375, 37.61899948120117, distance_in_miles/40)
+    #return "{Longs: '" + str(Longs).replace(", ", "->") + "', Lats: '" + str(Lats).replace(", ", "->") + "'}"
+    return "SAC-" + str(source_airport_code) + "DAC-" + str(destination_airport_code) + "DIM-" + str(distance_in_miles)
+
+udf_find_route_path = udf(find_route_path, StringType())
+
+scaling_df = scaling_df.withColumn("ROUTE_PATH", udf_find_route_path("ORIGIN", "DEST", "DISTANCE"))
+
+#scaling_df.show(showRowCount, False)
 
 #print("Writing csv file on hdfs ...")
 #delay_df.repartition(1).write.csv(hdfs_csv_writing_paths)

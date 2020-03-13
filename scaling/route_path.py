@@ -8,7 +8,7 @@ class Path_finder:
 
      def find_route(self, source_lat, source_lon, target_lat, target_lon):
           distance_in_miles = self.calculate_distance(source_lat, source_lon, target_lat, target_lon)
-          Longs, Lats = self.map.gcpoints(source_lon, source_lat, target_lon, target_lat, distance_in_miles/40)
+          Longs, Lats = self.map.gcpoints(source_lon, source_lat, target_lon, target_lat, 3) #distance_in_miles/40)
           return Longs, Lats, len(Longs), len(Lats)
 
      def calculate_distance(self, source_lat, source_lon, target_lat, target_lon):       
