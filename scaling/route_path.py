@@ -28,3 +28,5 @@ class Path_finder:
 
 t = Path_finder()
 print(t.find_route(40.63980103, -73.77890015, 37.61899948120117, -122.375))
+
+print(round(292/3))
