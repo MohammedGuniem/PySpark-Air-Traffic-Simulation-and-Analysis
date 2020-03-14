@@ -12,5 +12,7 @@ https://www.transtats.bts.gov/DL_SelectFields.asp?Table_ID=
 Here is a link that shows how to convert csv loaded model into python dict using pandas
 https://stackoverflow.com/questions/53682702/how-to-convert-csv-file-to-json-file-using-pyspark
 
+link that shows how to read the only csv in a folder, used in plotting routes
+https://stackoverflow.com/questions/33503993/read-in-all-csv-files-from-a-directory-using-python
 
 ****************** Other Notes *********************
