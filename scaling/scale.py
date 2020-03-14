@@ -34,16 +34,31 @@ scaling_df = scaling_df.filter(scaling_df.WHEELS_ON.between(1720,1840))
 
 print("count after filtering between departure time and arrival time: ", scaling_df.count())
 
-def find_route_path(source_airport_code, destination_airport_code, distance_in_miles):
-    area_map = Basemap(llcrnrlon=-180, llcrnrlat=10, urcrnrlon=-50, urcrnrlat=70, lat_ts=0, resolution='l')
-    #Longs, Lats = area_map.gcpoints(source_lon, source_lat, target_lon, target_lat, distance_in_miles/40) #40.63980103, -73.77890015, 37.61899948120117, -122.375
-    Longs, Lats = area_map.gcpoints(-73.77890015, 40.63980103, -122.375, 37.61899948120117, (distance_in_miles/40)+1)
-    return "{Longs: '" + str(Longs).replace(", ", "->") + "', Lats: '" + str(Lats).replace(", ", "->") + "'}"
-    #return "SAC-" + str(source_airport_code) + "DAC-" + str(destination_airport_code) + "DIM-" + str(distance_in_miles) + "-NoP-" + str(distance_in_miles/40)
+def find_route_path(origin, destination, distance_in_miles):
+    area_map = Basemap(llcrnrlon=-109, llcrnrlat=37, urcrnrlon=-102, urcrnrlat=41, lat_ts=0, resolution='l')    
+    origin_lat = airports_data[origin][0]["LATITUDE"]
+    origin_lon = airports_data[origin][0]['LONGITUDE']
+    destination_lat = airports_data[destination][0]["LATITUDE"]
+    destination_lon = airports_data[destination][0]['LONGITUDE']
+    Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, (distance_in_miles/40)+1)
+    for lon in Longs:
+        if float(lon) < -102 and float(lon) > -109 and float(Lats[Longs.index(lon)]) < 41 and float(Lats[Longs.index(lon)]) > 37:
+           return str(origin_lat) + "|" + str(origin_lon) + "|" + str(destination_lat) + "|" + str(destination_lon) + "|INSIDE"
+    return str(origin_lat) + "|" + str(origin_lon) + "|" + str(destination_lat) + "|" + str(destination_lon) + "|OUTSIDE"
 
 udf_find_route_path = udf(find_route_path, StringType())
 
+airports_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/support_data/airports_data.csv")
+
+airports_df = airports_df.toPandas().groupby('AIRPORT')
+global airports_data 
+airports_data = {}
+for key, grp in airports_df:
+    airports_data[str(key)] = grp.to_dict('records')
+
 scaling_df = scaling_df.withColumn("ROUTE_PATH", udf_find_route_path("ORIGIN", "DEST", "DISTANCE"))
+
+print("count after determining if route passes over Colorado or not: ", scaling_df.count())
 
 #scaling_df.show(showRowCount, False)
 

@@ -1,0 +1,16 @@
+****************** Notes for Prediction ************
+
+****************** Notes for Statistics ************
+
+****************** Notes for Scaling ***************
+Here is a link that explains how to get the route between 2 airport coordinates using the basemap package in python
+https://towardsdatascience.com/planning-to-travel-around-the-world-with-python-42fac1d21a6e
+
+Here is a link to the page where data about airports in th USA can be downloaded in csv format
+https://www.transtats.bts.gov/DL_SelectFields.asp?Table_ID=
+
+Here is a link that shows how to convert csv loaded model into python dict using pandas
+https://stackoverflow.com/questions/53682702/how-to-convert-csv-file-to-json-file-using-pyspark
+
+
+****************** Other Notes *********************
