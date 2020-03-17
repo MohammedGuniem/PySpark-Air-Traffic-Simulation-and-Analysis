@@ -64,6 +64,6 @@ print("count after determining the routes that belongs to the target area: ", sc
 #scaling_df.repartition(1).write.csv("")
 
 print("Writing csv file on local machine ...")
-scaling_df.repartition(1).write.csv("scale_model_2019_03_08_1720_1840", header = 'true', index=False)
+scaling_df.repartition(1).write.csv("scale_model_2019_03_08_1720_1840", header = 'true')
 
 print("Done scaling.")
