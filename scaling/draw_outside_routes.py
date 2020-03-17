@@ -19,22 +19,20 @@ for root,dirs,files in os.walk(directory):
        if file.endswith(".csv"):
           data_file = "d:\\Data-intensive systemer/dat500_project/scaling/scale_model_2019_03_08_1720_1840/" + file
 
-
 with open(data_file, 'r') as file:
     reader = csv.reader(file)
     headers = next(reader, None)
     for row in reader:
-        r = row[36].split("|")
-        origin_lat = float(r[0])
-        origin_lon = float(r[1])
-        destination_lat = float(r[2])
-        destination_lon = float(r[3])
+        origin_lat = float(row[46])
+        origin_lon = float(row[47])
+        destination_lat = float(row[48])
+        destination_lon = float(row[49])
         Points = {"Source":(origin_lat,origin_lon),"Destination":(destination_lat,destination_lon)}
         Lon = [Points[key][0] for key in Points]
         Lat = [Points[key][1] for key in Points]
         X, Y = m(Lat,Lon)
         # Draw outside routes as black routes
-        if r[4] == "OUTSIDE":
+        if row[50] == "OUTSIDE":
           m.scatter(X,Y,zorder=5,s=50,color="#de1dcb",marker="o")
           x, y = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],500)
           plt.plot(x,y,color="#000000",linewidth=2)

@@ -24,27 +24,26 @@ with open(data_file, 'r') as file:
     reader = csv.reader(file)
     headers = next(reader, None)
     for row in reader:
-        r = row[36].split("|")
-        origin_lat = float(r[0])
-        origin_lon = float(r[1])
-        destination_lat = float(r[2])
-        destination_lon = float(r[3])
+        origin_lat = float(row[46])
+        origin_lon = float(row[47])
+        destination_lat = float(row[48])
+        destination_lon = float(row[49])
         Points = {"Source":(origin_lat,origin_lon),"Destination":(destination_lat,destination_lon)}
         Lon = [Points[key][0] for key in Points]
         Lat = [Points[key][1] for key in Points]
         X, Y = m(Lat,Lon)
         # Draw passover routes as blue routes
-        if r[4] == "INSIDE" and row[12] != "Colorado" and row[9] != "Colorado":
+        if row[50] == "INSIDE" and row[16] != "Colorado" and row[21] != "Colorado":
           m.scatter(X,Y,zorder=5,s=50,color="#de1dcb",marker="o")
           x, y = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],500)
           plt.plot(x,y,color="#201dde",linewidth=2)
         # Draw landing routes as green routes
-        if r[4] == "INSIDE" and row[12] == "Colorado" and row[9] != "Colorado":
+        if row[50] == "INSIDE" and row[16] != "Colorado" and row[21] == "Colorado":
           m.scatter(X,Y,zorder=5,s=50,color="#de1dcb",marker="o")
           x, y = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],500)
           plt.plot(x,y,color="#1dde37",linewidth=2)
         # Draw takeoff routes as red routes
-        if r[4] == "INSIDE" and row[12] != "Colorado" and row[9] == "Colorado":
+        if row[50] == "INSIDE" and row[16] == "Colorado" and row[21] != "Colorado":
           m.scatter(X,Y,zorder=5,s=50,color="#de1dcb",marker="o")
           x, y = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],500)
           plt.plot(x,y,color="#DE1D1D",linewidth=2)
