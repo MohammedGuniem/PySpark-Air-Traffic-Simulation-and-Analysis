@@ -46,13 +46,26 @@ scaling_df = scaling_df.filter(scaling_df.WHEELS_ON.between(1720,1840))
 
 print("count after filtering between departure time and arrival time: ", scaling_df.count())
 
+global entry_and_exit
+entry_and_exit = {}
+
 def find_route_path(origin_lat, origin_lon, destination_lat, destination_lon, distance_in_miles):    
     area_map = Basemap(llcrnrlon=-109, llcrnrlat=37, urcrnrlon=-102, urcrnrlat=41, lat_ts=0, resolution='l')    
     Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, (distance_in_miles/40)+1)
+    
+    inside_lon_array = []
+    inside_lat_array = []
+
     for lon in Longs:
         if float(lon) < -102 and float(lon) > -109 and float(Lats[Longs.index(lon)]) < 41 and float(Lats[Longs.index(lon)]) > 37:
-           return "INSIDE"
-    return "OUTSIDE"
+           inside_lon_array.append(str(lon))
+           inside_lat_array.append(str(Lats[Longs.index(lon)]))
+    
+    if len(inside_lon_array) == 0 or len(inside_lat_array) == 0:
+       return "OUTSIDE"
+    else:    
+       return inside_lon_array[0] + "|" + inside_lat_array[0] + "|" + inside_lon_array[len(inside_lon_array)-1] + "|" + inside_lat_array[len(inside_lat_array)-1] + "|" + "INSIDE"
+    
 
 udf_find_route_path = udf(find_route_path, StringType())
 
