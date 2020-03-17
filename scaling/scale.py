@@ -11,6 +11,8 @@ sc.setLogLevel('FATAL')
 
 sqlContext = SQLContext(sc)
 
+print("Started scaling ...")
+
 scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/dataset/2019_03.csv")
 
 airports_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/support_data/airports_data.csv")
@@ -31,8 +33,6 @@ scaling_df = scaling_df.withColumnRenamed('LONGITUDE','DEST_LONGITUDE')
 print("total number of data row after joining with coordinates: ", scaling_df.count())
 
 showRowCount = 10 
-
-print("Started scaling ...")
 
 print("Initial number of rows in dataframe: ", scaling_df.count())
 
@@ -60,10 +60,10 @@ scaling_df = scaling_df.withColumn("IS_IN_AREA", udf_find_route_path("ORIGIN_LAT
 
 print("count after determining the routes that belongs to the target area: ", scaling_df.count())
 
-print("Writing csv file on hdfs ...")
-scaling_df.repartition(1).write.csv("scale_model_2019_03_08_1720_1840")
+#print("Writing csv file on hdfs ...")
+#scaling_df.repartition(1).write.csv("")
 
-#print("Writing csv file on local machine ...")
-#scaling_df.repartition(1).write.csv("scale_model_2019_03_08_1720_1840", header = 'true', index=False)
+print("Writing csv file on local machine ...")
+scaling_df.repartition(1).write.csv("scale_model_2019_03_08_1720_1840", header = 'true', index=False)
 
 print("Done scaling.")
