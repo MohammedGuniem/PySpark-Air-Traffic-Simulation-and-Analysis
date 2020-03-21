@@ -49,5 +49,9 @@ routes_df = routes_df.withColumnRenamed('LONGITUDE','DEST_LONGITUDE')
 routes_df = routes_df.withColumnRenamed('UTC_LOCAL_TIME_VARIATION','DEST_UTC_LOCAL_TIME_VARIATION')
 print("Count of rows: ", routes_df.count())
 
+print("Joining the scaling dataframe with the routes information dataframe...")
+scaling_df = scaling_df.join(routes_df.select(*["ROUTE_PATH",'ORIGIN_LATITUDE','ORIGIN_LONGITUDE','ORIGIN_UTC_LOCAL_TIME_VARIATION','DEST_LATITUDE','DEST_LONGITUDE','DEST_UTC_LOCAL_TIME_VARIATION']), "ROUTE_PATH")
+print("Count of rows: ", scaling_df.count())
+
 print("Writing csv file on local machine ...")
-routes_df.repartition(1).write.csv("debug_1", header = 'true')
+scaling_df.repartition(1).write.csv("debug_2", header = 'true')
