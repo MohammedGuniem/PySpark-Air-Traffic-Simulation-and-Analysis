@@ -1,7 +1,11 @@
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
-from pyspark.sql.functions import concat_ws, mean as _mean, max as _max, desc
+from pyspark.sql.functions import concat_ws, mean as _mean, max as _max, desc, udf, col, lit
+from pyspark.sql.types import StringType, TimestampType
+from datetime import datetime, timedelta
+import time
+
 
 sc = SparkContext()
 sc.setLogLevel('FATAL')
@@ -10,7 +14,10 @@ sqlContext = SQLContext(sc)
 TARGET = {
  'year': '2019',
  'month': '03',
- 'day': '08'
+ 'day': '08',
+ 'from_utc_time': '15:30:00',
+ 'to_utc_time': '21:45:00',
+ 'output_filename': 'routes_on_2019_03_08_From_1530_To_2145'
 }
 
 print("Started scaling ...")
@@ -53,5 +60,43 @@ print("Joining the scaling dataframe with the routes information dataframe...")
 scaling_df = scaling_df.join(routes_df.select(*["ROUTE_PATH",'ORIGIN_LATITUDE','ORIGIN_LONGITUDE','ORIGIN_UTC_LOCAL_TIME_VARIATION','DEST_LATITUDE','DEST_LONGITUDE','DEST_UTC_LOCAL_TIME_VARIATION']), "ROUTE_PATH")
 print("Count of rows: ", scaling_df.count())
 
+print("Removing flights that never took off or landed...")
+scaling_df = scaling_df.filter(scaling_df.WHEELS_OFF.between(0000, 2359))
+print("Count of rows: ", scaling_df.count())
+scaling_df = scaling_df.filter(scaling_df.WHEELS_ON.between(0000, 2359))
+print("Count of rows: ", scaling_df.count())
+
+print("Converting wheels off and wheels on local time to UTC time...")
+def convert_local_to_UTC_time(date, time, utc_time_variation):
+     digit_count = len(str(time))
+     if digit_count == 1:
+         time = "000"+str(time)
+     elif digit_count == 2:
+         time = "00"+str(time)
+     elif digit_count == 3:
+         time = "0"+str(time)
+     else:
+         time = str(time)
+     pattern_string = '%Y-%m-%d %H%M'
+     date = str(date).split(" ")[0]
+     datetime_string = date + ' ' + str(time)
+     date_and_time = datetime.strptime(datetime_string, pattern_string)
+     time_in_utc = date_and_time - timedelta(hours=(int(utc_time_variation)/100))
+     return time_in_utc
+
+convert_local_to_UTC_time_udf = udf(convert_local_to_UTC_time, TimestampType())
+scaling_df = scaling_df.withColumn("WHEELS_OFF_UTC_DATETIME", convert_local_to_UTC_time_udf(scaling_df["FL_DATE"].cast(StringType()), scaling_df["WHEELS_OFF"], scaling_df["ORIGIN_UTC_LOCAL_TIME_VARIATION"]))
+print("Count of rows: ", scaling_df.count())
+scaling_df = scaling_df.withColumn("WHEELS_ON_UTC_DATETIME", convert_local_to_UTC_time_udf(scaling_df["FL_DATE"].cast(StringType()), scaling_df["WHEELS_ON"], scaling_df["DEST_UTC_LOCAL_TIME_VARIATION"]))
+print("Count of rows: ", scaling_df.count())
+
+print("Filter in respect to time... ")
+utc_from_datetime = TARGET['year'] + "-" + TARGET['month'] + "-" + TARGET['day'] + " " + TARGET['from_utc_time']
+utc_to_datetime = TARGET['year'] + "-" + TARGET['month'] + "-" + TARGET['day'] + " " + TARGET['to_utc_time']
+scaling_df = scaling_df.where(col('WHEELS_OFF_UTC_DATETIME').between(*(utc_from_datetime.replace(TARGET['year'],str(int(TARGET['year'])-1)), utc_to_datetime)))
+print("Count of rows: ", scaling_df.count())
+scaling_df = scaling_df.where(col('WHEELS_ON_UTC_DATETIME').between(*(utc_from_datetime, utc_to_datetime.replace(TARGET['year'],str(int(TARGET['year'])+1)))))
+print("Count of rows: ", scaling_df.count())
+
 print("Writing csv file on local machine ...")
-scaling_df.repartition(1).write.csv("debug_2", header = 'true')
+scaling_df.repartition(1).write.csv(TARGET['output_filename'], header = 'true')
