@@ -120,10 +120,8 @@ scaling_df = scaling_df.where(col('WHEELS_ON_UTC_DATETIME').between(*(utc_from_d
 print("Count of rows: ", scaling_df.count())
 
 #debug 2
-scaling_df.repartition(1).write.csv("debug_2", header = 'true')
+#scaling_df.repartition(1).write.csv("debug_2", header = 'true')
 
-
-"""
 print("Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...")
 schema = StructType([
     StructField("ROUTE_PATH", StringType(), False),
@@ -166,18 +164,20 @@ def find_route_path(route_path, origin_lat, origin_lon, destination_lat, destina
                  'exit_time': str(time_array[len(time_array)-1]),
                  'is_in_area': 'INSIDE'}
     return (route_path, result['entry_lon'], result['entry_lat'], result['exit_lon'], result['exit_lat'], result['entry_time'], result['exit_time'], result['is_in_area'])
-"""
-#udf_find_route_path = udf(find_route_path, schema)
 
-#route_info_df = scaling_df.select(udf_find_route_path("ROUTE_PATH", "ORIGIN_LATITUDE", "ORIGIN_LONGITUDE", "DEST_LATITUDE", "DEST_LONGITUDE", "DISTANCE", "AIR_TIME", "WHEELS_OFF_UTC_DATETIME").alias("info"))
+udf_find_route_path = udf(find_route_path, schema)
 
-#route_info_df = route_info_df.select("info.ROUTE_PATH", "info.ENTRY_LONGITUDE", "info.ENTRY_LATITUDE", "info.EXIT_LONGITUDE", "info.EXIT_LATITUDE", "info.ENTRY_TIME", "info.EXIT_TIME", "info.IS_IN_AREA")
-#route_info_df.repartition(1).write.csv(TARGET['output_filename'], header = 'true')
-#print("Count of rows: ", route_info_df.count())
+route_info_df = scaling_df.select(udf_find_route_path("ROUTE_PATH", "ORIGIN_LATITUDE", "ORIGIN_LONGITUDE", "DEST_LATITUDE", "DEST_LONGITUDE", "DISTANCE", "AIR_TIME", "WHEELS_OFF_UTC_DATETIME").alias("info"))
 
-#print("Joining the scaling dataframe with the route information dataframe...")
-#scaling_df = scaling_df.join(route_info_df.select(*['ROUTE_PATH', "ENTRY_LONGITUDE", "ENTRY_LATITUDE", "EXIT_LONGITUDE", "EXIT_LATITUDE", "ENTRY_TIME", "EXIT_TIME", "IS_IN_AREA"]), "ROUTE_PATH")
-#print("Count of rows: ", scaling_df.count())
+route_info_df = route_info_df.select("info.ROUTE_PATH", "info.ENTRY_LONGITUDE", "info.ENTRY_LATITUDE", "info.EXIT_LONGITUDE", "info.EXIT_LATITUDE", "info.ENTRY_TIME", "info.EXIT_TIME", "info.IS_IN_AREA")
 
-#print("Writing csv file on local machine ...")
-#scaling_df.repartition(1).write.csv(TARGET['output_filename'], header = 'true')
+print("Writing csv file on local machine ...")
+route_info_df.repartition(1).write.csv("debug_3", header = 'true')
+print("Count of rows: ", route_info_df.count())
+
+print("Joining the scaling dataframe with the route information dataframe...")
+scaling_df = scaling_df.join(route_info_df.select(*['ROUTE_PATH', "ENTRY_LONGITUDE", "ENTRY_LATITUDE", "EXIT_LONGITUDE", "EXIT_LATITUDE", "ENTRY_TIME", "EXIT_TIME", "IS_IN_AREA"]), "ROUTE_PATH")
+print("Count of rows: ", scaling_df.count())
+
+print("Writing csv file on local machine ...")
+scaling_df.repartition(1).write.csv("debug_4", header = 'true')
