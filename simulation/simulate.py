@@ -2,10 +2,10 @@ from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
 from pyspark.sql.functions import concat_ws, mean as _mean, max as _max, desc, udf, col, lit
-from pyspark.sql.types import StringType, TimestampType
+from pyspark.sql.types import StringType, TimestampType, StructType, StructField, DoubleType
 from datetime import datetime, timedelta
 import time
-
+from mpl_toolkits.basemap import Basemap
 
 sc = SparkContext()
 sc.setLogLevel('FATAL')
@@ -16,16 +16,28 @@ TARGET = {
  'month': '03',
  'day': '08',
  'from_utc_time': '15:30:00',
- 'to_utc_time': '21:45:00',
- 'output_filename': 'routes_on_2019_03_08_From_1530_To_2145'
+ 'to_utc_time': '16:00:00',
+ 'output_filename': 'debug_1'
 }
 
 print("Started scaling ...")
-scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/dataset/"+TARGET['year']+"_"+TARGET['month']+".csv")
+scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/dataset/*.csv")
 print("Count of rows: ", scaling_df.count())
 
 print("Filter in respect to day of month -> keeping yesterday, today and tomorrow... ")
 scaling_df = scaling_df.filter(scaling_df.DAY_OF_MONTH.between(int(TARGET['day'])-1, int(TARGET['day'])+1))
+print("Count of rows: ", scaling_df.count())
+
+print("Removing flights that never been in the sky...")
+scaling_df = scaling_df.na.drop(subset=["AIR_TIME"])
+print("Count of rows: ", scaling_df.count())
+
+print("Removing flights that never took off...")
+scaling_df = scaling_df.filter(scaling_df.WHEELS_OFF.between(0000, 2359))
+print("Count of rows: ", scaling_df.count())
+
+print("Removing flights that never landed...")
+scaling_df = scaling_df.filter(scaling_df.WHEELS_ON.between(0000, 2359))
 print("Count of rows: ", scaling_df.count())
 
 print("Constructing the route paths in one column...")
@@ -56,16 +68,30 @@ routes_df = routes_df.withColumnRenamed('LONGITUDE','DEST_LONGITUDE')
 routes_df = routes_df.withColumnRenamed('UTC_LOCAL_TIME_VARIATION','DEST_UTC_LOCAL_TIME_VARIATION')
 print("Count of rows: ", routes_df.count())
 
+#debug_1
+#routes_df.repartition(1).write.csv(TARGET['output_filename'], header = 'true')
+
+
+
+
+"""
 print("Joining the scaling dataframe with the routes information dataframe...")
 scaling_df = scaling_df.join(routes_df.select(*["ROUTE_PATH",'ORIGIN_LATITUDE','ORIGIN_LONGITUDE','ORIGIN_UTC_LOCAL_TIME_VARIATION','DEST_LATITUDE','DEST_LONGITUDE','DEST_UTC_LOCAL_TIME_VARIATION']), "ROUTE_PATH")
 print("Count of rows: ", scaling_df.count())
 
-print("Removing flights that never took off or landed...")
+"""
+"""
+print("Removing flights that never been in the sky...")
+scaling_df = scaling_df.na.drop(subset=["AIR_TIME"]) 
+print("Count of rows: ", scaling_df.count())
+print("Removing flights that never took off...")
 scaling_df = scaling_df.filter(scaling_df.WHEELS_OFF.between(0000, 2359))
 print("Count of rows: ", scaling_df.count())
+print("Removing flights that never landed...")
 scaling_df = scaling_df.filter(scaling_df.WHEELS_ON.between(0000, 2359))
 print("Count of rows: ", scaling_df.count())
-
+"""
+"""
 print("Converting wheels off and wheels on local time to UTC time...")
 def convert_local_to_UTC_time(date, time, utc_time_variation):
      digit_count = len(str(time))
@@ -98,5 +124,60 @@ print("Count of rows: ", scaling_df.count())
 scaling_df = scaling_df.where(col('WHEELS_ON_UTC_DATETIME').between(*(utc_from_datetime, utc_to_datetime.replace(TARGET['year'],str(int(TARGET['year'])+1)))))
 print("Count of rows: ", scaling_df.count())
 
-print("Writing csv file on local machine ...")
-scaling_df.repartition(1).write.csv(TARGET['output_filename'], header = 'true')
+print("Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...")
+schema = StructType([
+    StructField("ROUTE_PATH", StringType(), False),
+    StructField("ENTRY_LONGITUDE", DoubleType(), False),
+    StructField("ENTRY_LATITUDE", DoubleType(), False),
+    StructField("EXIT_LONGITUDE", DoubleType(), False),
+    StructField("EXIT_LATITUDE", DoubleType(), False),
+    StructField("ENTRY_TIME", DoubleType(), False),
+    StructField("EXIT_TIME", DoubleType(), False),
+    StructField("IS_IN_AREA", StringType(), False)
+])
+
+def find_route_path(route_path, origin_lat, origin_lon, destination_lat, destination_lon, distance_in_miles, air_time_in_minutes, wheels_off_utc_datetime):
+    area_map = Basemap(llcrnrlon=-109, llcrnrlat=37, urcrnrlon=-102, urcrnrlat=41, lat_ts=0, resolution='l')
+    Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat,3)#(distance_in_miles/40)+1)
+    
+    inside_lon_array = []
+    inside_lat_array = []
+    time_array = []
+
+    time_increase_rate = (air_time_in_minutes*60)/3 #((distance_in_miles/40)+1)
+    start_time = datetime.strptime(str(wheels_off_utc_datetime), '%Y-%m-%d %H:%M:%S')
+    current_time = int(start_time.strftime("%s"))
+
+    for lon in Longs:
+        if float(lon) < -102 and float(lon) > -109 and float(Lats[Longs.index(lon)]) < 41 and float(Lats[Longs.index(lon)]) > 37:
+           inside_lon_array.append(lon)
+           inside_lat_array.append(Lats[Longs.index(lon)])
+           time_array.append(current_time)
+        current_time += time_increase_rate
+
+    if len(inside_lon_array) == 0 or len(inside_lat_array) == 0:
+       result = {'entry_lon': 'null', 'entry_lat': 'null', 'exit_lon': 'null', 'exit_lat': 'null', 'entry_time': 'null', 'exit_time': 'null', 'is_in_area': 'OUTSIDE'}
+    else:    
+       result = {'entry_lon': inside_lon_array[0],
+                 'entry_lat': inside_lat_array[0],
+                 'exit_lon': inside_lon_array[len(inside_lon_array)-1],
+                 'exit_lat': inside_lat_array[len(inside_lat_array)-1],
+                 'entry_time': str(time_array[0]),
+                 'exit_time': str(time_array[len(time_array)-1]),
+                 'is_in_area': 'INSIDE'}
+    return (route_path, result['entry_lon'], result['entry_lat'], result['exit_lon'], result['exit_lat'], result['entry_time'], result['exit_time'], result['is_in_area'])
+"""
+#udf_find_route_path = udf(find_route_path, schema)
+
+#route_info_df = scaling_df.select(udf_find_route_path("ROUTE_PATH", "ORIGIN_LATITUDE", "ORIGIN_LONGITUDE", "DEST_LATITUDE", "DEST_LONGITUDE", "DISTANCE", "AIR_TIME", "WHEELS_OFF_UTC_DATETIME").alias("info"))
+
+#route_info_df = route_info_df.select("info.ROUTE_PATH", "info.ENTRY_LONGITUDE", "info.ENTRY_LATITUDE", "info.EXIT_LONGITUDE", "info.EXIT_LATITUDE", "info.ENTRY_TIME", "info.EXIT_TIME", "info.IS_IN_AREA")
+#route_info_df.repartition(1).write.csv(TARGET['output_filename'], header = 'true')
+#print("Count of rows: ", route_info_df.count())
+
+#print("Joining the scaling dataframe with the route information dataframe...")
+#scaling_df = scaling_df.join(route_info_df.select(*['ROUTE_PATH', "ENTRY_LONGITUDE", "ENTRY_LATITUDE", "EXIT_LONGITUDE", "EXIT_LATITUDE", "ENTRY_TIME", "EXIT_TIME", "IS_IN_AREA"]), "ROUTE_PATH")
+#print("Count of rows: ", scaling_df.count())
+
+#print("Writing csv file on local machine ...")
+#scaling_df.repartition(1).write.csv(TARGET['output_filename'], header = 'true')
