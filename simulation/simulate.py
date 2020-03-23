@@ -69,17 +69,12 @@ routes_df = routes_df.withColumnRenamed('UTC_LOCAL_TIME_VARIATION','DEST_UTC_LOC
 print("Count of rows: ", routes_df.count())
 
 #debug_1
-#routes_df.repartition(1).write.csv(TARGET['output_filename'], header = 'true')
+#routes_df.repartition(1).write.csv("debug_1", header = 'true')
 
-
-
-
-"""
 print("Joining the scaling dataframe with the routes information dataframe...")
 scaling_df = scaling_df.join(routes_df.select(*["ROUTE_PATH",'ORIGIN_LATITUDE','ORIGIN_LONGITUDE','ORIGIN_UTC_LOCAL_TIME_VARIATION','DEST_LATITUDE','DEST_LONGITUDE','DEST_UTC_LOCAL_TIME_VARIATION']), "ROUTE_PATH")
 print("Count of rows: ", scaling_df.count())
 
-"""
 """
 print("Removing flights that never been in the sky...")
 scaling_df = scaling_df.na.drop(subset=["AIR_TIME"]) 
@@ -91,7 +86,7 @@ print("Removing flights that never landed...")
 scaling_df = scaling_df.filter(scaling_df.WHEELS_ON.between(0000, 2359))
 print("Count of rows: ", scaling_df.count())
 """
-"""
+
 print("Converting wheels off and wheels on local time to UTC time...")
 def convert_local_to_UTC_time(date, time, utc_time_variation):
      digit_count = len(str(time))
@@ -124,6 +119,11 @@ print("Count of rows: ", scaling_df.count())
 scaling_df = scaling_df.where(col('WHEELS_ON_UTC_DATETIME').between(*(utc_from_datetime, utc_to_datetime.replace(TARGET['year'],str(int(TARGET['year'])+1)))))
 print("Count of rows: ", scaling_df.count())
 
+#debug 2
+scaling_df.repartition(1).write.csv("debug_2", header = 'true')
+
+
+"""
 print("Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...")
 schema = StructType([
     StructField("ROUTE_PATH", StringType(), False),
@@ -144,7 +144,7 @@ def find_route_path(route_path, origin_lat, origin_lon, destination_lat, destina
     inside_lat_array = []
     time_array = []
 
-    time_increase_rate = (air_time_in_minutes*60)/3 #((distance_in_miles/40)+1)
+    time_increase_rate = (air_time_in_minutes*60)/((distance_in_miles/40)+1)
     start_time = datetime.strptime(str(wheels_off_utc_datetime), '%Y-%m-%d %H:%M:%S')
     current_time = int(start_time.strftime("%s"))
 
