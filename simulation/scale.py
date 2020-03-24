@@ -45,9 +45,7 @@ scaling_df = scaling_df.where(col('WHEELS_OFF_UTC_DATETIME').between(*wheels_off
 
 print("Count of rows: ", scaling_df.count())
 
-scaling_df = scaling_df.limit(10)
-
-scaling_df.repartition(1).write.csv("scaled_data_test", header = 'true')
+scaling_df.repartition(1).write.csv("scaled_data", header = 'true')
 
 now = datetime.now()
 print("Finished scaling at: ", now)
