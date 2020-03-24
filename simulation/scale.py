@@ -29,7 +29,7 @@ TARGET = {
 now = datetime.now()
 print("Started scaling at: ", now)
 
-scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("prepared_data/part*.csv") #"hdfs://master:9000/dataset/prepared_data/part*.csv")
+scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/scaling_and_simulation/prepared_data/part*.csv")
 print("Count of rows: ", scaling_df.count())
 
 print("Filter in respect to day of month -> keeping yesterday, today and tomorrow... ")
@@ -45,7 +45,9 @@ scaling_df = scaling_df.where(col('WHEELS_OFF_UTC_DATETIME').between(*wheels_off
 
 print("Count of rows: ", scaling_df.count())
 
-scaling_df.repartition(1).write.csv("scaled_data", header = 'true')
+scaling_df = scaling_df.limit(10)
+
+scaling_df.repartition(1).write.csv("scaled_data_test", header = 'true')
 
 now = datetime.now()
 print("Finished scaling at: ", now)
