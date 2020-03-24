@@ -16,3 +16,5 @@ link that shows how to read the only csv in a folder, used in plotting routes
 https://stackoverflow.com/questions/33503993/read-in-all-csv-files-from-a-directory-using-python
 
 ****************** Other Notes *********************
+start ssh with no sleep
+-o "ServerAliveInterval 60"
