@@ -15,6 +15,16 @@ sqlContext = SQLContext(sc)
 now = datetime.now()
 print("Started scaling at: ", now)
 
+TARGET = {
+ 'start_date': '2019-05-25 00:00:00',
+ 'end_date': '2019-05-25 23:59:59',
+ 'date_pattern': '%Y-%m-%d %H:%M:%S',
+ 'output_filename': 'output'
+}
+
+from_date = time.mktime(datetime.strptime(TARGET['start_date'], TARGET['date_pattern']).timetuple())
+to_date = time.mktime(datetime.strptime(TARGET['end_date'], TARGET['date_pattern']).timetuple())
+
 print("Reading data...")
 scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("scaled_data/part-*.csv") #"hdfs://master:9000/datas/.csv")
 print("Count of rows: ", scaling_df.count())
@@ -54,19 +64,21 @@ for row in scaling_df.rdd.collect():
            time_array.append(current_time)
         current_time += time_increase_rate
 
-    if len(inside_lon_array) == 0 or len(inside_lat_array) == 0:
+    if (len(inside_lon_array) == 0 or len(inside_lat_array) == 0 or len(time_array) == 0):
        result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon, 'is_in_area': 'OUTSIDE'}
-    else:    
+    elif (time_array[0] < from_date and time_array[len(time_array)-1] < from_date) or (time_array[0] > to_date and time_array[len(time_array)-1] > to_date):
+       result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon, 'is_in_area': 'OUTSIDE'}
+    else:
        result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon,
                  'entry_lon': inside_lon_array[0],
                  'entry_lat': inside_lat_array[0],
                  'exit_lon': inside_lon_array[len(inside_lon_array)-1],
                  'exit_lat': inside_lat_array[len(inside_lat_array)-1],
-                 'entry_time': str(time_array[0]),
-                 'exit_time': str(time_array[len(time_array)-1]),
+                 'entry_time': time_array[0],
+                 'exit_time': time_array[len(time_array)-1],
                  'is_in_area': 'INSIDE'}
-    result['route'] = row.ROUTE_PATH
-    all_routes.append(result)
+       result['route'] = row.ROUTE_PATH
+       all_routes.append(result)
 
 print("Number of processed routes: ", len(all_routes))
 
