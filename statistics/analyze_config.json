@@ -7,8 +7,8 @@
             "target_type": "normal",
             "target_name": "aircrafts",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_aircraft_delay",
-                "local": "analyze_aircraft_delay"
+                "hdfs": "hdfs://master:9000/statistics/carrier_delay",
+                "local": "carrier_delay"
             }
         },
         {
@@ -17,8 +17,8 @@
             "target_type": "normal",
             "target_name": "destination states",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_destination_state_delay",
-                "local": "analyze_destination_state_delay"
+                "hdfs": "hdfs://master:9000/statistics/destination_state_delay",
+                "local": "destination_state_delay"
             }
         },
         {
@@ -27,8 +27,8 @@
             "target_type": "normal",
             "target_name": "destination cities",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_destination_city_delay",
-                "local": "analyze_destination_city_delay"
+                "hdfs": "hdfs://master:9000/statistics/destination_city_delay",
+                "local": "destination_city_delay"
             }
         },
         {
@@ -37,8 +37,8 @@
             "target_type": "normal",
             "target_name": "destination airports",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_destination_airport_delay",
-                "local": "analyze_destination_airport_delay"
+                "hdfs": "hdfs://master:9000/statistics/destination_airport_delay",
+                "local": "destination_airport_delay"
             }
         },
         {
@@ -47,8 +47,8 @@
             "target_type": "normal",
             "target_name": "origin states",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_origin_state_delay",
-                "local": "analyze_origin_state_delay"
+                "hdfs": "hdfs://master:9000/statistics/origin_state_delay",
+                "local": "origin_state_delay"
             }
         },
         {
@@ -57,8 +57,8 @@
             "target_type": "normal",
             "target_name": "origin cities",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_origin_city_delay",
-                "local": "analyze_origin_city_delay"
+                "hdfs": "hdfs://master:9000/statistics/origin_city_delay",
+                "local": "origin_city_delay"
             }
         },
         {
@@ -67,8 +67,8 @@
             "target_type": "normal",
             "target_name": "origin airports",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_origin_airport_delay",
-                "local": "analyze_origin_airport_delay"
+                "hdfs": "hdfs://master:9000/statistics/origin_airport_delay",
+                "local": "origin_airport_delay"
             }
         },
         {
@@ -79,8 +79,8 @@
             "target_separator": " -> ",
             "target_name": "routes between 2 states",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_route_between_2_states_delay",
-                "local": "analyze_route_between_2_states_delay"
+                "hdfs": "hdfs://master:9000/statistics/route_between_2_states_delay",
+                "local": "route_between_2_states_delay"
             }
         },
         {
@@ -91,20 +91,30 @@
             "target_separator": " -> ",
             "target_name": "routes between 2 cities",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_route_between_2_cities_delay",
-                "local": "analyze_route_between_2_cities_delay"
+                "hdfs": "hdfs://master:9000/statistics/route_between_2_cities_delay",
+                "local": "route_between_2_cities_delay"
             }
         },
         {
-            "description": "Analyzing delay times based on route between 2airports as a target",
+            "description": "Analyzing delay times based on route between 2 airports as a target",
             "target_column": "ROUTE_BETWEEN_AIRPORTS",
             "target_type": "merged",
             "target_components": ["ORIGIN", "DEST"],
             "target_separator": " -> ",
             "target_name": "routes between 2 airports",
             "csv_writing_paths": {
-                "hdfs": "hdfs://master:9000/statistics/analyze_route_between_2_airports_delay",
-                "local": "analyze_route_between_2_airports_delay"
+                "hdfs": "hdfs://master:9000/statistics/route_between_2_airports_delay",
+                "local": "route_between_2_airports_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on month as a target",
+            "target_column": "MONTH",
+            "target_type": "normal",
+            "target_name": "months",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/months_delay",
+                "local": "months_delay"
             }
         }
     ]

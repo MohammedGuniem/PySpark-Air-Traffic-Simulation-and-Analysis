@@ -1,7 +1,7 @@
 import json
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
-from pyspark.sql.functions import col, collect_set, array_contains, size, first, sum as _sum, mean as _mean, desc, asc, count, concat_ws
+from pyspark.sql.functions import col, array_contains, size, first, sum as _sum, mean as _mean, max as _max, min as _min, desc, asc, count, concat_ws
 from pyspark.sql import SQLContext
 
 config_file = open("analyze_config.json")
@@ -43,12 +43,13 @@ for target in config["analyze_targets"]:
     delay_df = delay_df.groupBy(target_column)
     
     delay_df = delay_df.agg(
-		_sum('TOTAL_DELAY').alias('SUM_OF_ALL_DELAYS'),_mean('TOTAL_DELAY').alias('AVERAGE_OF_ALL_DELAYS'),
-		_sum('WEATHER_DELAY').alias("SUM_OF_WEATHER_DELAY"),_mean('WEATHER_DELAY').alias('AVERAGE_OF_WEATHER_DELAY'),
-		_sum('CARRIER_DELAY').alias("SUM_OF_CARRIER_DELAY"),_mean('CARRIER_DELAY').alias('AVERAGE_OF_CARRIER_DELAY'),
-		_sum('NAS_DELAY').alias("SUM_OF_NAS_DELAY"),_mean('NAS_DELAY').alias('AVERAGE_OF_NAS_DELAY'),
-		_sum('SECURITY_DELAY').alias("SUM_OF_SECURITY_DELAY"),_mean('SECURITY_DELAY').alias('AVERAGE_OF_SECURITY_DELAY'),
-		_sum('LATE_AIRCRAFT_DELAY').alias("SUM_OF_LATE_AIRCRAFT_DELAY"),_mean('LATE_AIRCRAFT_DELAY').alias('AVERAGE_OF_LATE_AIRCRAFT_DELAY')
+		_sum('TOTAL_DELAY').alias('SUM_OF_ALL_DELAYS'),_mean('TOTAL_DELAY').alias('AVERAGE_OF_ALL_DELAYS'),_min('TOTAL_DELAY').alias("MIN_OF_ALL_DELAYS"),_max('TOTAL_DELAY').alias("MAX_OF_ALL_DELAYS"),
+       	        _sum('WEATHER_DELAY').alias("SUM_OF_WEATHER_DELAY"),_mean('WEATHER_DELAY').alias('AVERAGE_OF_WEATHER_DELAY'),_min('WEATHER_DELAY').alias("MIN_OF_WEATHER_DELAY"),_max('WEATHER_DELAY').alias("MAX_OF_WEATHER_DELAY"),	
+                _sum('CARRIER_DELAY').alias("SUM_OF_CARRIER_DELAY"),_mean('CARRIER_DELAY').alias('AVERAGE_OF_CARRIER_DELAY'),_min('CARRIER_DELAY').alias("MIN_OF_CARRIER_DELAY"),_max('CARRIER_DELAY').alias("MAX_OF_CARRIER_DELAY"),
+                _sum('NAS_DELAY').alias("SUM_OF_NAS_DELAY"),_mean('NAS_DELAY').alias('AVERAGE_OF_NAS_DELAY'),_min('NAS_DELAY').alias("MIN_OF_NAS_DELAY"),_max('NAS_DELAY').alias("MAX_OF_NAS_DELAY"),
+                _sum('SECURITY_DELAY').alias("SUM_OF_SECURITY_DELAY"),_mean('SECURITY_DELAY').alias('AVERAGE_OF_SECURITY_DELAY'),_min('SECURITY_DELAY').alias("MIN_OF_SECURITY_DELAY"),_max('SECURITY_DELAY').alias("MAX_OF_SECURITY_DELAY"),
+                _sum('LATE_AIRCRAFT_DELAY').alias("SUM_OF_LATE_AIRCRAFT_DELAY"),_mean('LATE_AIRCRAFT_DELAY').alias('AVERAGE_OF_LATE_AIRCRAFT_DELAY'),
+                _min('LATE_AIRCRAFT_DELAY').alias("MIN_OF_LATE_AIRCRAFT_DELAY"),_max('LATE_AIRCRAFT_DELAY').alias("MAX_OF_LATE_AIRCRAFT_DELAY")
 	).sort(desc("SUM_OF_ALL_DELAYS"))
     
     delay_df.show(showRowCount, False)
