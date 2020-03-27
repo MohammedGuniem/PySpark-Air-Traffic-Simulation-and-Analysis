@@ -1,8 +1,5 @@
 from mpl_toolkits.basemap import Basemap
-from math import sin, cos, sqrt, atan2, radians
 from matplotlib import pyplot as plt
-import os
-import csv
 import json
 
 plt.figure(figsize = (15,8))
@@ -13,7 +10,7 @@ m.drawcountries(color='#585858',linewidth=1)
 m.drawstates(linewidth = 0.2)
 m.drawcoastlines()
 
-with open("simulated_data.json", 'r') as file:
+with open("../simulated_data.json", 'r') as file:
     data = json.load(file)
     for route in data:
         if route['is_in_area'] == "INSIDE":
@@ -21,8 +18,6 @@ with open("simulated_data.json", 'r') as file:
             Lon = [Points[key][0] for key in Points]
             Lat = [Points[key][1] for key in Points]
             X, Y = m(Lat,Lon)
-             
-
 
             origin_lat = route['origin_lat']
             origin_lon = route['origin_lon']
@@ -63,5 +58,5 @@ with open("simulated_data.json", 'r') as file:
                 m.scatter(X,Y,zorder=5,s=50,color="#0000FF",marker="^")
                 plt.plot(longs,lats,color="#0000FF",linewidth=2)
 
-print(len(data))
+print("The number of flights over target area: ", len(data))
 plt.show()
