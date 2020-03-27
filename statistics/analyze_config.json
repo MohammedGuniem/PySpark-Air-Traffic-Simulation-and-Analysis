@@ -8,7 +8,7 @@
             "target_name": "aircrafts",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/carrier_delay",
-                "local": "carrier_delay"
+                "local": "output_data/carrier_delay"
             }
         },
         {
@@ -18,7 +18,7 @@
             "target_name": "destination states",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/destination_state_delay",
-                "local": "destination_state_delay"
+                "local": "output_data/destination_state_delay"
             }
         },
         {
@@ -28,7 +28,7 @@
             "target_name": "destination cities",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/destination_city_delay",
-                "local": "destination_city_delay"
+                "local": "output_data/destination_city_delay"
             }
         },
         {
@@ -38,7 +38,7 @@
             "target_name": "destination airports",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/destination_airport_delay",
-                "local": "destination_airport_delay"
+                "local": "output_data/destination_airport_delay"
             }
         },
         {
@@ -48,7 +48,7 @@
             "target_name": "origin states",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/origin_state_delay",
-                "local": "origin_state_delay"
+                "local": "output_data/origin_state_delay"
             }
         },
         {
@@ -58,7 +58,7 @@
             "target_name": "origin cities",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/origin_city_delay",
-                "local": "origin_city_delay"
+                "local": "output_data/origin_city_delay"
             }
         },
         {
@@ -68,7 +68,7 @@
             "target_name": "origin airports",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/origin_airport_delay",
-                "local": "origin_airport_delay"
+                "local": "output_data/origin_airport_delay"
             }
         },
         {
@@ -80,7 +80,7 @@
             "target_name": "routes between 2 states",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/route_between_2_states_delay",
-                "local": "route_between_2_states_delay"
+                "local": "output_data/route_between_2_states_delay"
             }
         },
         {
@@ -92,7 +92,7 @@
             "target_name": "routes between 2 cities",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/route_between_2_cities_delay",
-                "local": "route_between_2_cities_delay"
+                "local": "output_data/route_between_2_cities_delay"
             }
         },
         {
@@ -104,7 +104,7 @@
             "target_name": "routes between 2 airports",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/route_between_2_airports_delay",
-                "local": "route_between_2_airports_delay"
+                "local": "output_data/route_between_2_airports_delay"
             }
         },
         {
@@ -114,7 +114,7 @@
             "target_name": "months",
             "csv_writing_paths": {
                 "hdfs": "hdfs://master:9000/statistics/months_delay",
-                "local": "months_delay"
+                "local": "output_data/months_delay"
             }
         }
     ]

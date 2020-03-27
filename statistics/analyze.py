@@ -43,15 +43,17 @@ for target in config["analyze_targets"]:
     delay_df = delay_df.groupBy(target_column)
     
     delay_df = delay_df.agg(
-		_sum('TOTAL_DELAY').alias('SUM_OF_ALL_DELAYS'),_mean('TOTAL_DELAY').alias('AVERAGE_OF_ALL_DELAYS'),_min('TOTAL_DELAY').alias("MIN_OF_ALL_DELAYS"),_max('TOTAL_DELAY').alias("MAX_OF_ALL_DELAYS"),
-       	        _sum('WEATHER_DELAY').alias("SUM_OF_WEATHER_DELAY"),_mean('WEATHER_DELAY').alias('AVERAGE_OF_WEATHER_DELAY'),_min('WEATHER_DELAY').alias("MIN_OF_WEATHER_DELAY"),_max('WEATHER_DELAY').alias("MAX_OF_WEATHER_DELAY"),	
-                _sum('CARRIER_DELAY').alias("SUM_OF_CARRIER_DELAY"),_mean('CARRIER_DELAY').alias('AVERAGE_OF_CARRIER_DELAY'),_min('CARRIER_DELAY').alias("MIN_OF_CARRIER_DELAY"),_max('CARRIER_DELAY').alias("MAX_OF_CARRIER_DELAY"),
-                _sum('NAS_DELAY').alias("SUM_OF_NAS_DELAY"),_mean('NAS_DELAY').alias('AVERAGE_OF_NAS_DELAY'),_min('NAS_DELAY').alias("MIN_OF_NAS_DELAY"),_max('NAS_DELAY').alias("MAX_OF_NAS_DELAY"),
-                _sum('SECURITY_DELAY').alias("SUM_OF_SECURITY_DELAY"),_mean('SECURITY_DELAY').alias('AVERAGE_OF_SECURITY_DELAY'),_min('SECURITY_DELAY').alias("MIN_OF_SECURITY_DELAY"),_max('SECURITY_DELAY').alias("MAX_OF_SECURITY_DELAY"),
-                _sum('LATE_AIRCRAFT_DELAY').alias("SUM_OF_LATE_AIRCRAFT_DELAY"),_mean('LATE_AIRCRAFT_DELAY').alias('AVERAGE_OF_LATE_AIRCRAFT_DELAY'),
-                _min('LATE_AIRCRAFT_DELAY').alias("MIN_OF_LATE_AIRCRAFT_DELAY"),_max('LATE_AIRCRAFT_DELAY').alias("MAX_OF_LATE_AIRCRAFT_DELAY")
-	).sort(desc("SUM_OF_ALL_DELAYS"))
+		_sum('TOTAL_DELAY').alias('SUM OF ALL DELAYS'),_mean('TOTAL_DELAY').alias('AVERAGE OF ALL DELAYS'),_min('TOTAL_DELAY').alias("MIN OF ALL DELAYS"),_max('TOTAL_DELAY').alias("MAX OF ALL DELAYS"),
+       	        _sum('WEATHER_DELAY').alias("SUM OF WEATHER DELAY"),_mean('WEATHER_DELAY').alias('AVERAGE OF WEATHER DELAY'),_min('WEATHER_DELAY').alias("MIN OF WEATHER DELAY"),_max('WEATHER_DELAY').alias("MAX OF WEATHER DELAY"),	
+                _sum('CARRIER_DELAY').alias("SUM OF CARRIER DELAY"),_mean('CARRIER_DELAY').alias('AVERAGE OF CARRIER DELAY'),_min('CARRIER_DELAY').alias("MIN OF CARRIER DELAY"),_max('CARRIER_DELAY').alias("MAX OF CARRIER DELAY"),
+                _sum('NAS_DELAY').alias("SUM OF NAS DELAY"),_mean('NAS_DELAY').alias('AVERAGE OF NAS DELAY'),_min('NAS_DELAY').alias("MIN OF NAS DELAY"),_max('NAS_DELAY').alias("MAX OF NAS DELAY"),
+                _sum('SECURITY_DELAY').alias("SUM OF SECURITY DELAY"),_mean('SECURITY_DELAY').alias('AVERAGE OF SECURITY DELAY'),_min('SECURITY_DELAY').alias("MIN OF SECURITY DELAY"),_max('SECURITY_DELAY').alias("MAX OF SECURITY DELAY"),
+                _sum('LATE_AIRCRAFT_DELAY').alias("SUM OF LATE AIRCRAFT DELAY"),_mean('LATE_AIRCRAFT_DELAY').alias('AVERAGE OF LATE AIRCRAFT DELAY'),
+                _min('LATE_AIRCRAFT_DELAY').alias("MIN OF LATE AIRCRAFT DELAY"),_max('LATE_AIRCRAFT_DELAY').alias("MAX OF LATE AIRCRAFT DELAY")
+	).sort(desc("SUM OF ALL DELAYS"))
     
+    delay_df = delay_df.withColumnRenamed(target_column, target_column.replace("_", " "))
+
     delay_df.show(showRowCount, False)
     
     print("The total number of " + target_name + " in dataset is: " + str(delay_df.count()))
