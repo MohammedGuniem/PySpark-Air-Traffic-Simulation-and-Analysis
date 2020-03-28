@@ -1,6 +1,14 @@
 from mpl_toolkits.basemap import Basemap
 from matplotlib import pyplot as plt
+from datetime import datetime
+import argparse, sys
 import json
+import time
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--input_filename', help='Enter the name of your input file which generated using pyspark, for example (simulated_data_2019_05_25.json)')
+parser.add_argument('--input_datetime', help='Enter one datetime in the simulation, for example (2019-05-25 18:00:00)')
+args = parser.parse_args()
 
 plt.figure(figsize = (15,8))
 m = Basemap(llcrnrlon=-170,llcrnrlat=10,urcrnrlon=-60,urcrnrlat=70, lat_ts=0, resolution='l')
@@ -10,12 +18,16 @@ m.drawcountries(color='#585858',linewidth=1)
 m.drawstates(linewidth = 0.2)
 m.drawcoastlines()
 
-with open("../simulated_data.json", 'r') as file:
+with open("../"+args.input_filename, 'r') as file:
     data = json.load(file)
     entry_times = []
     exit_times = []
+    unix_datetime = time.mktime(datetime.strptime(args.input_datetime, '%Y-%m-%d %H:%M:%S').timetuple())
+    normal_datetime = datetime.fromtimestamp(unix_datetime).strftime('%Y-%m-%d %H:%M:%S')
+    print("unix given time is: ", unix_datetime)
+    print("normal/human given time is: ", normal_datetime)
     for route in data:
-        if route['is_in_area'] == "INSIDE":
+        if route['is_in_area'] == "INSIDE" and not (route['entry_time'] < unix_datetime and route['exit_time'] < unix_datetime) and not (route['entry_time'] > unix_datetime and route['exit_time'] > unix_datetime):
             Points = {"Source":(route['dest_lat'],route['dest_lon']),"Destination":(route['origin_lat'],route['origin_lon'])}
             Lon = [Points[key][0] for key in Points]
             Lat = [Points[key][1] for key in Points]
@@ -28,7 +40,7 @@ with open("../simulated_data.json", 'r') as file:
             longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],100)
             
             entry_times.append(route['entry_time'])
-            exit_times.append(route['entry_time'])
+            exit_times.append(route['exit_time'])
 
             # drawing inside Colorado routes - orange
             if (dest_lon < -102 and dest_lon > -109 and dest_lat < 41 and dest_lat > 37) and (origin_lon < -102 and origin_lon > -109 and origin_lat < 41 and origin_lat > 37):
@@ -63,9 +75,9 @@ with open("../simulated_data.json", 'r') as file:
                 m.scatter(X,Y,zorder=5,s=50,color="#0000FF",marker="^")
                 plt.plot(longs,lats,color="#0000FF",linewidth=2)
 
-print(min(entry_times)) #1558787340
-print(max(entry_times)) #1558809554.7600906
-print(min(exit_times)) #1558787340
-print(max(exit_times)) #1558809554.7600906
-print("The number of flights over target area: ", len(data))
+print("The minimum entry time: ", datetime.utcfromtimestamp(min(entry_times)).strftime('%Y-%m-%d %H:%M:%S'))
+print("The maximum entry time: ", datetime.utcfromtimestamp(max(entry_times)).strftime('%Y-%m-%d %H:%M:%S'))
+print("The minimum exit time: ", datetime.utcfromtimestamp(min(exit_times)).strftime('%Y-%m-%d %H:%M:%S'))
+print("The maximum exit time: ", datetime.utcfromtimestamp(max(exit_times)).strftime('%Y-%m-%d %H:%M:%S'))
+print("The number of flights over target area at "+ normal_datetime +": ", len(entry_times))
 plt.show()
