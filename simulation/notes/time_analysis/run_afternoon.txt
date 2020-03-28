@@ -1,0 +1,17 @@
+ubuntu@master:~/dat500_project/simulation$ spark-submit scale_and_simulate.py --start_datetime='2019-05-25 15:00:00' --end_datetime='2019-05-25 15:30:30' --output_filename='simulated_data_2019_05_25_in_afternoon'
+20/03/28 13:04:38 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Scaling started scaling at:  2020-03-28 13:04:39.861795
+Reading data...
+Remaining rows:  7264518
+Filter in respect to day of month -> keeping yesterday, today and tomorrow...
+Remaining rows:  4480707
+Remaining rows:  2362
+Scaling finished at:  2020-03-28 13:06:59.107403
+Simulation started at:  2020-03-28 13:06:59.107534
+Constructing the route paths in one column...
+Remaining rows:  2362
+Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...
+Number of processed routes:  153
+Simulation finished at:  2020-03-28 13:08:15.159066
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+duration: 3.6 minutes minutes

@@ -74,6 +74,10 @@ print("Count of rows after converting wheels off to utc time: ", scaling_df.coun
 scaling_df = scaling_df.withColumn("WHEELS_ON_UTC_DATETIME", convert_local_to_UTC_time_udf(scaling_df["FL_DATE"].cast(StringType()), scaling_df["WHEELS_ON"], scaling_df["DEST_UTC_LOCAL_TIME_VARIATION"]))
 print("Count of rows after converting wheels on to utc time: ", scaling_df.count())
 
+print("Writing prepared data to local filesystem")
+scaling_df.repartition(1).write.csv("prepared_data", header = 'true')
+
+print("Writing prepared data to HDFS filesystem")
 scaling_df.repartition(1).write.csv("hdfs://master:9000/scaling_and_simulation/prepared_data", header = 'true')
 
 now = datetime.now()

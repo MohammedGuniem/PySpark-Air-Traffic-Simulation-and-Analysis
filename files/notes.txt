@@ -15,6 +15,9 @@ https://stackoverflow.com/questions/53682702/how-to-convert-csv-file-to-json-fil
 link that shows how to read the only csv in a folder, used in plotting routes
 https://stackoverflow.com/questions/33503993/read-in-all-csv-files-from-a-directory-using-python
 
+link that shows how to read command line argument in python
+https://stackoverflow.com/questions/40001892/reading-named-command-arguments
+
 ****************** Other Notes *********************
 start ssh with no sleep
 -o "ServerAliveInterval 60"

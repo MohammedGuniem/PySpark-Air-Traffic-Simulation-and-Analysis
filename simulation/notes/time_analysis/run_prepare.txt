@@ -1,0 +1,24 @@
+ubuntu@master:~/dat500_project/simulation$ python prepare.py
+20/03/28 11:31:48 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Started at:  2020-03-28 11:31:50.636852
+Count of rows:  7422037
+Removing flights that never been in the sky...
+Count of rows after removing:  7268232
+Removing flights that never took off...
+Count of rows after removing:  7267297
+Removing flights that never landed...
+Count of rows after removing:  7264518
+Adding latitude, longitude and UTC time to the origin and destination of each route...
+Count of rows in support data:  18078
+Joining the scaling dataframe with the routes information from the support data...
+Count of rows after adding support data:  7264518
+Count of rows after adding support data:  7264518
+Converting wheels off and wheels on from local time to UTC time...
+Count of rows after converting wheels off to utc time:  7264518
+Count of rows after converting wheels on to utc time:  7264518
+Writing prepared data to local filesystem
+Writing prepared data to HDFS filesystem
+[Stage 36:>                                                         (0 + 1) / 1]
+Finished at:  2020-03-28 11:45:24.337027

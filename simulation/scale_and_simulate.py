@@ -5,6 +5,7 @@ from pyspark.sql.functions import concat_ws, mean as _mean, max as _max, desc, u
 from pyspark.sql.types import StringType, TimestampType, StructType, StructField, DoubleType
 from mpl_toolkits.basemap import Basemap
 from datetime import datetime, timedelta
+import argparse, sys
 import time
 import json
 
@@ -12,19 +13,25 @@ import json
 now = datetime.now()
 print("Scaling started scaling at: ", now)
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--start_datetime', help='Enter the start datetime of your simulation in the following format %Y-%m-%d %H:%M:%S')
+parser.add_argument('--end_datetime', help='Enter the end datetime of your simulation in the following format %Y-%m-%d %H:%M:%S')
+parser.add_argument('--output_filename', help='Enter the name of your output file')
+args = parser.parse_args()
+
 sc = SparkContext()
 sc.setLogLevel('FATAL')
 sqlContext = SQLContext(sc)
 
 TARGET = {
- 'start_datetime': '2019-05-25 00:00:00',
- 'end_datetime': '2019-05-25 23:59:59',
+ 'start_datetime': args.start_datetime, #'2019-05-25 00:00:00',
+ 'end_datetime': args.end_datetime, #'2019-05-25 23:59:59',
  'date_pattern': '%Y-%m-%d %H:%M:%S',
- 'output_filename': 'output'
+ 'output_filename': args.output_filename #'simulated_data'
 }
 
 print("Reading data...")
-scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("scaled_data/part-*.csv") #"hdfs://master:9000/datas/.csv")
+scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/scaling_and_simulation/prepared_data/*.csv")
 print("Remaining rows: ", scaling_df.count())
 
 print("Filter in respect to day of month -> keeping yesterday, today and tomorrow... ")
@@ -36,17 +43,15 @@ wheels_off_dates = ("2018-12-30 18:00:00", TARGET['end_datetime'])
 scaling_df = scaling_df.where(col('WHEELS_OFF_UTC_DATETIME').between(*wheels_off_dates))
 print("Remaining rows: ", scaling_df.count())
 
-#scaling_df.repartition(1).write.csv("scaled_data", header = 'true')
-
 now = datetime.now()
 print("Scaling finished at: ", now)
 
 # Simulation
 now = datetime.now()
-print("Simulation started scaling at: ", now)
+print("Simulation started at: ", now)
 
-from_date = time.mktime(datetime.strptime(TARGET['start_date'], TARGET['date_pattern']).timetuple())
-to_date = time.mktime(datetime.strptime(TARGET['end_date'], TARGET['date_pattern']).timetuple())
+from_date = time.mktime(datetime.strptime(TARGET['start_datetime'], TARGET['date_pattern']).timetuple())
+to_date = time.mktime(datetime.strptime(TARGET['end_datetime'], TARGET['date_pattern']).timetuple())
 
 print("Constructing the route paths in one column...")
 scaling_df = scaling_df.withColumn("ROUTE_PATH", concat_ws("->", "ORIGIN_AIRPORT_SEQ_ID", "DEST_AIRPORT_SEQ_ID"))
@@ -101,7 +106,7 @@ for row in scaling_df.rdd.collect():
 
 print("Number of processed routes: ", len(all_routes))
 
-with open('simulated_data.json', 'w') as outfile:
+with open(TARGET['output_filename'] + '.json', 'w') as outfile:
     json.dump(all_routes, outfile)
 
 now = datetime.now()
