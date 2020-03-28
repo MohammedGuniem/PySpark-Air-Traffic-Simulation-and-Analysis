@@ -1,3 +1,6 @@
+# To run an example of this script use this command
+# python 01_plot_routes.py --input_filename=simulated_data_2019_05_25.json
+
 from mpl_toolkits.basemap import Basemap
 from matplotlib import pyplot as plt
 from datetime import datetime

@@ -1,3 +1,6 @@
+# To run an example of this script use this command
+# python 02_plot_routes_at_one_given_time.py --input_filename=simulated_data_2019_05_25.json --input_datetime="2019-05-25 15:49:00"
+
 from mpl_toolkits.basemap import Basemap
 from matplotlib import pyplot as plt
 from datetime import datetime
@@ -27,7 +30,7 @@ with open("../"+args.input_filename, 'r') as file:
     print("unix given time is: ", unix_datetime)
     print("normal/human given time is: ", normal_datetime)
     for route in data:
-        if route['is_in_area'] == "INSIDE" and not (route['entry_time'] < unix_datetime and route['exit_time'] < unix_datetime) and not (route['entry_time'] > unix_datetime and route['exit_time'] > unix_datetime):
+        if route['is_in_area'] == "INSIDE" and unix_datetime <= route['exit_time'] and unix_datetime >= route['entry_time']:
             Points = {"Source":(route['dest_lat'],route['dest_lon']),"Destination":(route['origin_lat'],route['origin_lon'])}
             Lon = [Points[key][0] for key in Points]
             Lat = [Points[key][1] for key in Points]
