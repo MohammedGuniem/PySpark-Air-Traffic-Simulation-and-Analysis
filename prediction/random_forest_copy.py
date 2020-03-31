@@ -62,6 +62,7 @@ predictions.select('TAXI_OUT', 'DEP_DELAY', 'label', 'rawPrediction', 'predictio
 evaluator = BinaryClassificationEvaluator()
 print("Test Area Under ROC: " + str(evaluator.evaluate(predictions, {evaluator.metricName: "areaUnderROC"})))
 
+<<<<<<< HEAD
 
 paramGrid = ParamGridBuilder.build()
 
@@ -71,4 +72,6 @@ cv = CrossValidator(estimator=RandomForestClassifier, estimatorParamMaps=paramGr
 cvModel = cv.fit(train)
 predictions = cvModel.transform(test)
 evaluator.evaluate(predictions)
+=======
+>>>>>>> 8aeacc4b5ffa30247dfbb6022ee60a7743cda407
                                                                                                                                                                                                                                                                                                                                         
