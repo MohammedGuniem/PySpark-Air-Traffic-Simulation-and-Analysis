@@ -14,7 +14,8 @@ parser.add_argument('--input_datetime', help='Enter one datetime in the simulati
 args = parser.parse_args()
 
 plt.figure(figsize = (15,8))
-m = Basemap(llcrnrlon=-170,llcrnrlat=10,urcrnrlon=-60,urcrnrlat=70, lat_ts=0, resolution='l')
+#m = Basemap(llcrnrlon=-170,llcrnrlat=10,urcrnrlon=-60,urcrnrlat=70, lat_ts=0, resolution='l')
+m = Basemap(llcrnrlon=-112,llcrnrlat=36,urcrnrlon=-100,urcrnrlat=42, lat_ts=0, resolution='l')
 m.drawmapboundary(fill_color='#5D9BFF')
 m.fillcontinents(color='white',lake_color='blue')
 m.drawcountries(color='#585858',linewidth=1)
