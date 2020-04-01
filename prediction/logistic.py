@@ -1,3 +1,4 @@
+
 from pyspark import SparkContext, SQLContext
 from pyspark.sql.types import StringType
 from pyspark.ml import Pipeline
@@ -12,17 +13,15 @@ import sys,numpy as np
 from pyspark.ml.tuning import CrossValidator, ParamGridBuilder
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.ml.evaluation import Evaluator
-
+import pandas
 
 sc = SparkContext()
 sc.setLogLevel('FATAL')
 sqlContext = SQLContext(sc)
-print("Starting decision Tree classifier")
-
+print("Categorizing the delays from dataset")
 df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true', nullValue=' ').load("hdfs://master:9000/dataset/*.csv")
 to_keep = ['MONTH', 'DAY_OF_MONTH', 'DAY_OF_WEEK', 'TAXI_OUT', 'DISTANCE', 'DEST_CITY_NAME', 'ORIGIN_CITY_NAME', 'DEP_DELAY', 'ARR_DELAY']                                 
 df = df.select(to_keep)
-
 df = df.dropna()
 df = df.withColumn('label', (df.ARR_DELAY > 15).cast('integer'))
 num_0 = df.filter(df.label==0).count()
@@ -54,22 +53,22 @@ df = df.select(selectedCols)
 df.printSchema()
 
 train, test = df.randomSplit([0.7, 0.3], seed = 2019)
+
 print("Training Dataset Count: " + str(train.count()))
 print("Test Dataset Count: " + str(test.count()))
 
+lr = LogisticRegression(featuresCol = 'features', labelCol = 'label', maxIter=10)
+lrModel = lr.fit(train)
 
-dt = DecisionTreeClassifier(featuresCol = 'features', labelCol = 'label', maxDepth = 2)
-dtModel = dt.fit(train)
-prediction = dtModel.transform(test)
+prediction = lrModel.transform(test)
 prediction.select('TAXI_OUT', 'DEP_DELAY', 'label', 'rawPrediction', 'prediction', 'probability').show(10)
-
 evaluator = BinaryClassificationEvaluator()
 print("Test Area Under ROC: " + str(evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})))
-
 accuracy = evaluator.evaluate(prediction)
 print("Test Error = %g" % (1.0 - accuracy))
 prediction.groupBy('label', 'prediction').count().show()
 
+# Calculate the elements of the confusion matrix
 TN = prediction.filter('prediction = 0 AND label = prediction').count()
 TP = prediction.filter('prediction = 1 AND label = prediction').count()
 FN = prediction.filter('prediction = 0 AND label <> prediction').count()
@@ -79,8 +78,7 @@ print(' True Positive: %0.3f' % TP)
 print(' False Negative: %0.3f' % FN)
 print(' False Positive: %0.3f' % FP)
 
-
-#calculate accuracy, precision, recall, and F1-score
+# calculate accuracy, precision, recall, and F1-score
 accuracy = (TN + TP) / (TN + TP + FN + FP)
 precision = TP / (TP + FP)
 recall = TP / (TP + FN)
@@ -91,6 +89,15 @@ print(' accuracy: %0.3f' % accuracy)
 print(' F1 score: %0.3f' % F)
 TPR = TP / (TP + FN)
 FPR = FP / (FP + TN)
+
+
+
+
+
+
+
+
+
 
 
 

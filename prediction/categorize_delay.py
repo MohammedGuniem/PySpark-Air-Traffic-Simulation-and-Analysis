@@ -1,4 +1,3 @@
-
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
 from pyspark.sql.functions import udf,sum,when,col
