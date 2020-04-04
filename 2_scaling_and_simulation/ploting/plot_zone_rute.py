@@ -42,4 +42,5 @@ for llcrnlon in range(-130, -60, 10):
         m.scatter(urcrnrlon, urcrnrlat, zorder=5, s=50, color="#0000FF", marker="o")
         plt.text(urcrnrlon-6.5, urcrnrlat+1, coordinates_string, color="#a83232")
 
+plt.savefig("plot_images/zone_rute.png")
 plt.show()

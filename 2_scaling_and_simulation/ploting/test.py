@@ -14,9 +14,15 @@ for llcrnlon in range(-130, -60, 10):
     
 
 print(count)
-import sys
-sys.exit()
-print("-------------")
-for line_longitude in range(-130, -50, 10):
-    for line_latitude in range(25, 55, 5):
-         print(line_longitude, line_latitude)
+import json
+import os, shutil
+
+output_filename = 'simulated_data_10_04_2019'
+dirpath = os.path.join('', output_filename)
+if os.path.exists(dirpath) and os.path.isdir(dirpath):
+    shutil.rmtree(dirpath)
+os.mkdir(output_filename)
+
+all_routes = []
+with open(output_filename+'/-130_25_-120_30.json', 'w') as outfile:
+    json.dump(all_routes, outfile)

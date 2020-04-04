@@ -1,0 +1,191 @@
+ubuntu@master:~/dat500_project/2_scaling_and_simulation$ python scale_and_simulate_new.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated_data_10_04_2019"
+Scaling started scaling at:  2020-04-04 15:46:12.733954
+20/04/04 15:46:14 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Reading data...
+Remaining rows:  7264518
+Filter in respect to day of month -> keeping yesterday, today and tomorrow...
+Remaining rows:  5389274
+Remaining rows:  21546
+Scaling finished at:  2020-04-04 15:48:27.524737
+Simulation started at:  2020-04-04 15:48:27.524888
+Constructing the route paths in one column...
+Remaining rows:  21546
+Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...
+box nr.  1
+Left Lower Corner -> Longitude =  -130 , Latitude =  25
+Upper Right Corner -> Longitude =  -120 , Latitude =  30
+Number of processed routes:  1
+Scaled data saved in :  simulated_data_10_04_2019/minus130_25_minus120_30.json
+box nr.  2
+Left Lower Corner -> Longitude =  -130 , Latitude =  30
+Upper Right Corner -> Longitude =  -120 , Latitude =  35
+Number of processed routes:  99
+Scaled data saved in :  simulated_data_10_04_2019/minus130_30_minus120_35.json
+box nr.  3
+Left Lower Corner -> Longitude =  -130 , Latitude =  35
+Upper Right Corner -> Longitude =  -120 , Latitude =  40
+Number of processed routes:  1870
+Scaled data saved in :  simulated_data_10_04_2019/minus130_35_minus120_40.json
+box nr.  4
+Left Lower Corner -> Longitude =  -130 , Latitude =  40
+Upper Right Corner -> Longitude =  -120 , Latitude =  45
+Number of processed routes:  667
+Scaled data saved in :  simulated_data_10_04_2019/minus130_40_minus120_45.json
+box nr.  5
+Left Lower Corner -> Longitude =  -130 , Latitude =  45
+Upper Right Corner -> Longitude =  -120 , Latitude =  50
+Number of processed routes:  998
+Scaled data saved in :  simulated_data_10_04_2019/minus130_45_minus120_50.json
+box nr.  6
+Left Lower Corner -> Longitude =  -120 , Latitude =  25
+Upper Right Corner -> Longitude =  -110 , Latitude =  30
+Number of processed routes:  0
+Scaled data saved in :  simulated_data_10_04_2019/minus120_25_minus110_30.json
+box nr.  7
+Left Lower Corner -> Longitude =  -120 , Latitude =  30
+Upper Right Corner -> Longitude =  -110 , Latitude =  35
+Number of processed routes:  3221
+Scaled data saved in :  simulated_data_10_04_2019/minus120_30_minus110_35.json
+box nr.  8
+Left Lower Corner -> Longitude =  -120 , Latitude =  35
+Upper Right Corner -> Longitude =  -110 , Latitude =  40
+Number of processed routes:  3309
+Scaled data saved in :  simulated_data_10_04_2019/minus120_35_minus110_40.json
+box nr.  9
+Left Lower Corner -> Longitude =  -120 , Latitude =  40
+Upper Right Corner -> Longitude =  -110 , Latitude =  45
+Number of processed routes:  1342
+Scaled data saved in :  simulated_data_10_04_2019/minus120_40_minus110_45.json
+box nr.  10
+Left Lower Corner -> Longitude =  -120 , Latitude =  45
+Upper Right Corner -> Longitude =  -110 , Latitude =  50
+Number of processed routes:  485
+Scaled data saved in :  simulated_data_10_04_2019/minus120_45_minus110_50.json
+box nr.  11
+Left Lower Corner -> Longitude =  -110 , Latitude =  25
+Upper Right Corner -> Longitude =  -100 , Latitude =  30
+Number of processed routes:  4
+Scaled data saved in :  simulated_data_10_04_2019/minus110_25_minus100_30.json
+box nr.  12
+Left Lower Corner -> Longitude =  -110 , Latitude =  30
+Upper Right Corner -> Longitude =  -100 , Latitude =  35
+Number of processed routes:  1497
+Scaled data saved in :  simulated_data_10_04_2019/minus110_30_minus100_35.json
+box nr.  13
+Left Lower Corner -> Longitude =  -110 , Latitude =  35
+Upper Right Corner -> Longitude =  -100 , Latitude =  40
+Number of processed routes:  2693
+Scaled data saved in :  simulated_data_10_04_2019/minus110_35_minus100_40.json
+box nr.  14
+Left Lower Corner -> Longitude =  -110 , Latitude =  40
+Upper Right Corner -> Longitude =  -100 , Latitude =  45
+Number of processed routes:  1189
+Scaled data saved in :  simulated_data_10_04_2019/minus110_40_minus100_45.json
+box nr.  15
+Left Lower Corner -> Longitude =  -110 , Latitude =  45
+Upper Right Corner -> Longitude =  -100 , Latitude =  50
+Number of processed routes:  272
+Scaled data saved in :  simulated_data_10_04_2019/minus110_45_minus100_50.json
+box nr.  16
+Left Lower Corner -> Longitude =  -100 , Latitude =  25
+Upper Right Corner -> Longitude =  -90 , Latitude =  30
+Number of processed routes:  1889
+Scaled data saved in :  simulated_data_10_04_2019/minus100_25_minus90_30.json
+box nr.  17
+Left Lower Corner -> Longitude =  -100 , Latitude =  30
+Upper Right Corner -> Longitude =  -90 , Latitude =  35
+Number of processed routes:  3955
+Scaled data saved in :  simulated_data_10_04_2019/minus100_30_minus90_35.json
+box nr.  18
+Left Lower Corner -> Longitude =  -100 , Latitude =  35
+Upper Right Corner -> Longitude =  -90 , Latitude =  40
+Number of processed routes:  2919
+Scaled data saved in :  simulated_data_10_04_2019/minus100_35_minus90_40.json
+box nr.  19
+Left Lower Corner -> Longitude =  -100 , Latitude =  40
+Upper Right Corner -> Longitude =  -90 , Latitude =  45
+Number of processed routes:  2588
+Scaled data saved in :  simulated_data_10_04_2019/minus100_40_minus90_45.json
+box nr.  20
+Left Lower Corner -> Longitude =  -100 , Latitude =  45
+Upper Right Corner -> Longitude =  -90 , Latitude =  50
+Number of processed routes:  288
+Scaled data saved in :  simulated_data_10_04_2019/minus100_45_minus90_50.json
+box nr.  21
+Left Lower Corner -> Longitude =  -90 , Latitude =  25
+Upper Right Corner -> Longitude =  -80 , Latitude =  30
+Number of processed routes:  2826
+Scaled data saved in :  simulated_data_10_04_2019/minus90_25_minus80_30.json
+box nr.  22
+Left Lower Corner -> Longitude =  -90 , Latitude =  30
+Upper Right Corner -> Longitude =  -80 , Latitude =  35
+Number of processed routes:  5242
+Scaled data saved in :  simulated_data_10_04_2019/minus90_30_minus80_35.json
+box nr.  23
+Left Lower Corner -> Longitude =  -90 , Latitude =  35
+Upper Right Corner -> Longitude =  -80 , Latitude =  40
+Number of processed routes:  6092
+Scaled data saved in :  simulated_data_10_04_2019/minus90_35_minus80_40.json
+box nr.  24
+Left Lower Corner -> Longitude =  -90 , Latitude =  40
+Upper Right Corner -> Longitude =  -80 , Latitude =  45
+Number of processed routes:  5253
+Scaled data saved in :  simulated_data_10_04_2019/minus90_40_minus80_45.json
+box nr.  25
+Left Lower Corner -> Longitude =  -90 , Latitude =  45
+Upper Right Corner -> Longitude =  -80 , Latitude =  50
+Number of processed routes:  70
+Scaled data saved in :  simulated_data_10_04_2019/minus90_45_minus80_50.json
+box nr.  26
+Left Lower Corner -> Longitude =  -80 , Latitude =  25
+Upper Right Corner -> Longitude =  -70 , Latitude =  30
+Number of processed routes:  609
+Scaled data saved in :  simulated_data_10_04_2019/minus80_25_minus70_30.json
+box nr.  27
+Left Lower Corner -> Longitude =  -80 , Latitude =  30
+Upper Right Corner -> Longitude =  -70 , Latitude =  35
+Number of processed routes:  1438
+Scaled data saved in :  simulated_data_10_04_2019/minus80_30_minus70_35.json
+box nr.  28
+Left Lower Corner -> Longitude =  -80 , Latitude =  35
+Upper Right Corner -> Longitude =  -70 , Latitude =  40
+Number of processed routes:  4859
+Scaled data saved in :  simulated_data_10_04_2019/minus80_35_minus70_40.json
+box nr.  29
+Left Lower Corner -> Longitude =  -80 , Latitude =  40
+Upper Right Corner -> Longitude =  -70 , Latitude =  45
+Number of processed routes:  4507
+Scaled data saved in :  simulated_data_10_04_2019/minus80_40_minus70_45.json
+box nr.  30
+Left Lower Corner -> Longitude =  -80 , Latitude =  45
+Upper Right Corner -> Longitude =  -70 , Latitude =  50
+Number of processed routes:  10
+Scaled data saved in :  simulated_data_10_04_2019/minus80_45_minus70_50.json
+box nr.  31
+Left Lower Corner -> Longitude =  -70 , Latitude =  25
+Upper Right Corner -> Longitude =  -60 , Latitude =  30
+Number of processed routes:  53
+Scaled data saved in :  simulated_data_10_04_2019/minus70_25_minus60_30.json
+box nr.  32
+Left Lower Corner -> Longitude =  -70 , Latitude =  30
+Upper Right Corner -> Longitude =  -60 , Latitude =  35
+Number of processed routes:  32
+Scaled data saved in :  simulated_data_10_04_2019/minus70_30_minus60_35.json
+box nr.  33
+Left Lower Corner -> Longitude =  -70 , Latitude =  35
+Upper Right Corner -> Longitude =  -60 , Latitude =  40
+Number of processed routes:  5
+Scaled data saved in :  simulated_data_10_04_2019/minus70_35_minus60_40.json
+box nr.  34
+Left Lower Corner -> Longitude =  -70 , Latitude =  40
+Upper Right Corner -> Longitude =  -60 , Latitude =  45
+Number of processed routes:  22
+Scaled data saved in :  simulated_data_10_04_2019/minus70_40_minus60_45.json
+box nr.  35
+Left Lower Corner -> Longitude =  -70 , Latitude =  45
+Upper Right Corner -> Longitude =  -60 , Latitude =  50
+Number of processed routes:  0
+Scaled data saved in :  simulated_data_10_04_2019/minus70_45_minus60_50.json
+Simulation finished at:  2020-04-04 16:19:23.764226
