@@ -1,6 +1,6 @@
 # scale_and_simulate_new.py
 # To run this script, tray the following example
-# python scale_and_simulate_new.py --start_datetime="2019-05-25 00:00:00" --end_datetime="2019-05-25 23:59:59" --output_folder="simulated_data/"
+# python scale_and_simulate_new.py --start_datetime="2019-05-25 00:00:00" --end_datetime="2019-05-25 23:59:59" --output_folder="simulated_data"
 
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
@@ -9,9 +9,7 @@ from pyspark.sql.functions import concat_ws, mean as _mean, max as _max, desc, u
 from pyspark.sql.types import StringType, TimestampType, StructType, StructField, DoubleType
 from mpl_toolkits.basemap import Basemap
 from datetime import datetime, timedelta
-import argparse, sys
-import time
-import json
+import argparse, sys, json, time, os, shutil
 
 # Scaling
 now = datetime.now()
@@ -31,7 +29,7 @@ TARGET = {
  'start_datetime': args.start_datetime, #'2019-05-25 00:00:00',
  'end_datetime': args.end_datetime, #'2019-05-25 23:59:59',
  'date_pattern': '%Y-%m-%d %H:%M:%S',
- 'output_folder': args.output_filename #'simulated_data'
+ 'output_folder': args.output_folder #'simulated_data'
 }
 
 print("Reading data...")
@@ -62,13 +60,19 @@ scaling_df = scaling_df.withColumn("ROUTE_PATH", concat_ws("->", "ORIGIN_AIRPORT
 print("Remaining rows: ", scaling_df.count())
 
 print("Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...")
-box_number = 1
-print("box nr. ", box_number)
+dirpath = os.path.join('', TARGET['output_folder'])
+if os.path.exists(dirpath) and os.path.isdir(dirpath):
+    shutil.rmtree(dirpath)
+os.mkdir(TARGET['output_folder'])
 
+box_number = 1
 for llcrnrlon in range(-130, -60, 10):
     urcrnrlon = llcrnrlon+10
     for llcrnrlat in range(25, 50, 5):
         urcrnrlat = llcrnrlat+5
+        print("box nr. ", box_number)
+        print("Left Lower Corner -> Longitude = ", llcrnrlon, ", Latitude = ", llcrnrlat)
+        print("Upper Right Corner -> Longitude = ", urcrnrlon, ", Latitude = ", urcrnrlat)
         all_routes = []
         area_map = Basemap(llcrnrlon=llcrnrlon, llcrnrlat=llcrnrlat, urcrnrlon=urcrnrlon, urcrnrlat=urcrnrlat, lat_ts=0, resolution='l')
         for row in scaling_df.rdd.collect():
@@ -98,11 +102,11 @@ for llcrnrlon in range(-130, -60, 10):
                     inside_lat_array.append(LAT)
                     time_array.append(current_time)
                 current_time += time_increase_rate
-
+            
             if (len(inside_lon_array) == 0 or len(inside_lat_array) == 0 or len(time_array) == 0):
-                result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon, 'is_in_area': 'OUTSIDE'}
+                continue # result = {'is_in_area': 'OUTSIDE'}
             elif (time_array[0] < from_date and time_array[len(time_array)-1] < from_date) or (time_array[0] > to_date and time_array[len(time_array)-1] > to_date):
-                result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon, 'is_in_area': 'OUTSIDE'}
+                continue # result = {'is_in_area': 'OUTSIDE'}
             else:
                 result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon,
                         'entry_lon': inside_lon_array[0],
@@ -117,8 +121,10 @@ for llcrnrlon in range(-130, -60, 10):
 
         print("Number of processed routes: ", len(all_routes))
 
-        with open('/' + TARGET['output_folder'] + '/' + llcrnrlon + "_" + llcrnrlat + "_" + urcrnrlon + "_" + urcrnrlat +'.json', 'w') as outfile:
+        with open(TARGET['output_folder']+'/'+str(llcrnrlon).replace("-","minus")+"_"+str(llcrnrlat).replace("-","minus")+"_"+str(urcrnrlon).replace("-","minus")+"_"+str(urcrnrlat).replace("-","minus")+'.json', 'w') as outfile:
             json.dump(all_routes, outfile)
+
+        print("Scaled data saved in : ", TARGET['output_folder']+'/'+str(llcrnrlon).replace("-","minus")+"_"+str(llcrnrlat).replace("-","minus")+"_"+str(urcrnrlon).replace("-","minus")+"_"+str(urcrnrlat).replace("-","minus")+'.json')
 
         box_number += 1
 
