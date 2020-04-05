@@ -18,6 +18,12 @@ https://stackoverflow.com/questions/33503993/read-in-all-csv-files-from-a-direct
 link that shows how to read command line argument in python
 https://stackoverflow.com/questions/40001892/reading-named-command-arguments
 
+link to show how to put a legend on a python basemap plot 
+https://basemaptutorial.readthedocs.io/en/latest/first_map.html
+
+link to show how to make a video from images in python
+https://stackoverflow.com/questions/44947505/how-to-make-a-movie-out-of-images-in-python
+
 ****************** Other Notes *********************
 start ssh with no sleep
 -o "ServerAliveInterval 60"
