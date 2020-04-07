@@ -1,12 +1,7 @@
 # scale_and_simulate_new.py
 # To run this script, tray the following example
-# python scale_and_simulate_new2.py --start_datetime="2019-05-25 00:00:00" --end_datetime="2019-05-25 23:59:59" --output_folder="simulated_data"
+# python scale_and_simulate_new2.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated_data"
 
-for i in range(3,5+1,1):
-    print(i)
-
-import sys
-sys.exit()
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
@@ -37,6 +32,9 @@ TARGET = {
  'output_folder': args.output_folder #'simulated_data'
 }
 
+from_date = round(time.mktime(datetime.strptime(TARGET['start_datetime'], TARGET['date_pattern']).timetuple())/60)
+to_date = round(time.mktime(datetime.strptime(TARGET['end_datetime'], TARGET['date_pattern']).timetuple())/60)
+
 print("Reading data...")
 scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/scaling_and_simulation/prepared_data/*.csv")
 print("Remaining rows: ", scaling_df.count())
@@ -57,20 +55,17 @@ print("Scaling finished at: ", now)
 now = datetime.now()
 print("Simulation started at: ", now)
 
-from_date = time.mktime(datetime.strptime(TARGET['start_datetime'], TARGET['date_pattern']).timetuple())
-to_date = time.mktime(datetime.strptime(TARGET['end_datetime'], TARGET['date_pattern']).timetuple())
+#print("Constructing the route paths in one column...")
+#scaling_df = scaling_df.withColumn("ROUTE_PATH", concat_ws("->", "ORIGIN_AIRPORT_SEQ_ID", "DEST_AIRPORT_SEQ_ID"))
+#print("Remaining rows: ", scaling_df.count())
 
-print("Constructing the route paths in one column...")
-scaling_df = scaling_df.withColumn("ROUTE_PATH", concat_ws("->", "ORIGIN_AIRPORT_SEQ_ID", "DEST_AIRPORT_SEQ_ID"))
-print("Remaining rows: ", scaling_df.count())
-
-print("Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...")
+print("Calculating the flight position at each minute...")
 dirpath = os.path.join('', TARGET['output_folder'])
 if os.path.exists(dirpath) and os.path.isdir(dirpath):
     shutil.rmtree(dirpath)
 os.mkdir(TARGET['output_folder'])
 
-area_map = Basemap(llcrnrlon=-180, llcrnrlat=-90, urcrnrlon=180, urcrnrlat=90, lat_ts=0, resolution='l')
+area_map = Basemap(llcrnrlon=-180, llcrnrlat=-90, urcrnrlon=180, urcrnrlat=90, lat_ts=0, resolution='l')  #Basemap(llcrnrlon=-180, llcrnrlat=-90, urcrnrlon=180, urcrnrlat=90, lat_ts=0, resolution='l')
 
 position_information = {}
 
@@ -90,14 +85,24 @@ for row in scaling_df.rdd.collect():
     origin_lat = row.ORIGIN_LATITUDE
     destination_lat = row.DEST_LATITUDE
     destination_lon = row.DEST_LONGITUDE
-    wheels_off_utc_datetime = row.WHEELS_OFF_UTC_DATETIME
-    wheels_on_utc_datetime = row.WHEELS_ON_UTC_DATETIME
-    flight_start_time = round(datetime.strptime(str(wheels_off_utc_datetime), '%Y-%m-%d %H:%M:%S'))
-    flight_end_time = round(datetime.strptime(str(wheels_on_utc_datetime), '%Y-%m-%d %H:%M:%S'))
-    airtime_in_minutes = (flight_end_time.strftime("%s") - flight_start_time.strftime("%s"))/60
-
-    Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, airtime_in_minutes)
+    wheels_off_utc_datetime = round(time.mktime(datetime.strptime(str(row.WHEELS_OFF_UTC_DATETIME), TARGET['date_pattern']).timetuple())/60)
+    wheels_on_utc_datetime = round(time.mktime(datetime.strptime(str(row.WHEELS_ON_UTC_DATETIME), TARGET['date_pattern']).timetuple())/60)
+    flight_start_time = wheels_off_utc_datetime-2
+    flight_end_time = wheels_on_utc_datetime+2
+    airtime_in_minutes = (flight_end_time - flight_start_time)
     
+    if airtime_in_minutes < 10:
+      continue
+    
+    try:    
+      Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, airtime_in_minutes)
+    except:
+      print("--------------S--------------")
+      print("s time: ",flight_start_time)
+      print("e time: ",flight_end_time)
+      print("airtime: ",airtime_in_minutes)
+      print("--------------E--------------")
+
     route_details = {
         'origin_lat': origin_lat, 
         'origin_lon': origin_lon, 
@@ -111,22 +116,22 @@ for row in scaling_df.rdd.collect():
 
     route_information[route_scaling_id] = route_details
 
-    for current_time in range(flight_start_time, flight_end_time+1, 1):
-        current_position = {
-            'route_scaling_id': route_scaling_id,
-            'longitude': Longs[current_time-flight_start_time], 
-            'latitude':  Lats[current_time-flight_start_time]
-        }
-
-        position_information[current_time].append(current_position)
+    for current_time in range(flight_start_time, flight_end_time, 1):
+        if current_time >= from_date and current_time <= to_date:
+            current_position = {
+               'route_scaling_id': route_scaling_id,
+               'longitude': Longs[current_time-flight_start_time-1], 
+               'latitude':  Lats[current_time-flight_start_time-1]
+            }
+            position_information[current_time].append(current_position)
     
     route_scaling_id += 1
 
-print("Saving the route information")
+print("Saving the route information...")
 with open(TARGET['output_folder']+'/'+'route_information.json', 'w') as outfile:
     json.dump(route_information, outfile)
 
-print("Saving the position_information")
+print("Saving the position_information...")
 with open(TARGET['output_folder']+'/'+'position_information.json', 'w') as outfile:
     json.dump(position_information, outfile)
 
