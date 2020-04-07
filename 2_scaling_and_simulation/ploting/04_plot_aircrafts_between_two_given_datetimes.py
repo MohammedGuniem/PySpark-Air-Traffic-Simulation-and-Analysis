@@ -1,5 +1,6 @@
 # To run an example of this script use this command
 # python 04_plot_aircrafts_between_two_given_datetimes.py --input_filename=simulated_data_2019_05_25.json --start_datetime="2019-05-25 15:10:00" --end_datetime="2019-05-25 15:20:00" --output_filename="simulation_over_colorado_between_151000_and_152000_at_25052019" --increase_time_intervall="15" --keep_snapchat_images="0" --gif_duration=0.5
+# python 04_plot_aircrafts_between_two_given_datetimes.py --input_filename=s_d_2019_04_10.json --start_datetime="2019-05-25 15:10:00" --end_datetime="2019-05-25 15:20:00" --output_filename="simulation_over_colorado_between_151000_and_152000_at_10042019" --increase_time_intervall="15" --keep_snapchat_images="0" --gif_duration=0.5
 
 from mpl_toolkits.basemap import Basemap
 from matplotlib import pyplot as plt

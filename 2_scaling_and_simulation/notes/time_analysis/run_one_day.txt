@@ -15,3 +15,23 @@ Number of processed routes:  2483
 Simulation finished at:  2020-03-28 12:48:06.115657
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 duration: 3.43 minutes
+
+
+
+
+ubuntu@master:~/dat500_project/2_scaling_and_simulation$ python scale_and_simulate_new2.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated_data"
+Scaling started scaling at:  2020-04-07 15:41:18.212422
+20/04/07 15:41:20 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Reading data...
+Remaining rows:  7264518
+Filter in respect to day of month -> keeping yesterday, today and tomorrow...
+Remaining rows:  5389274
+Remaining rows:  21546
+Scaling finished at:  2020-04-07 15:47:55.012872
+Simulation started at:  2020-04-07 15:47:55.016628
+Calculating the flight position at each minute...
+Saving the route information...
+Saving the position_information...
+Simulation finished at:  2020-04-07 15:50:15.656848

@@ -1,3 +1,7 @@
+# scale_and_simulate_new.py
+# To run this script, tray the following example
+# python scale_and_simulate_new2.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated-data-2019-04-10"
+
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
@@ -5,9 +9,7 @@ from pyspark.sql.functions import concat_ws, mean as _mean, max as _max, desc, u
 from pyspark.sql.types import StringType, TimestampType, StructType, StructField, DoubleType
 from mpl_toolkits.basemap import Basemap
 from datetime import datetime, timedelta
-import argparse, sys
-import time
-import json
+import argparse, sys, json, time, os, shutil
 
 # Scaling
 now = datetime.now()
@@ -16,7 +18,7 @@ print("Scaling started scaling at: ", now)
 parser = argparse.ArgumentParser()
 parser.add_argument('--start_datetime', help='Enter the start datetime of your simulation in the following format %Y-%m-%d %H:%M:%S')
 parser.add_argument('--end_datetime', help='Enter the end datetime of your simulation in the following format %Y-%m-%d %H:%M:%S')
-parser.add_argument('--output_filename', help='Enter the name of your output file')
+parser.add_argument('--output_folder', help='Enter the name of your output file')
 args = parser.parse_args()
 
 sc = SparkContext()
@@ -27,8 +29,11 @@ TARGET = {
  'start_datetime': args.start_datetime, #'2019-05-25 00:00:00',
  'end_datetime': args.end_datetime, #'2019-05-25 23:59:59',
  'date_pattern': '%Y-%m-%d %H:%M:%S',
- 'output_filename': args.output_filename #'simulated_data'
+ 'output_folder': args.output_folder #'simulated_data'
 }
+
+from_date = round(time.mktime(datetime.strptime(TARGET['start_datetime'], TARGET['date_pattern']).timetuple())/60)
+to_date = round(time.mktime(datetime.strptime(TARGET['end_datetime'], TARGET['date_pattern']).timetuple())/60)
 
 print("Reading data...")
 scaling_df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true').load("hdfs://master:9000/scaling_and_simulation/prepared_data/*.csv")
@@ -50,64 +55,74 @@ print("Scaling finished at: ", now)
 now = datetime.now()
 print("Simulation started at: ", now)
 
-from_date = time.mktime(datetime.strptime(TARGET['start_datetime'], TARGET['date_pattern']).timetuple())
-to_date = time.mktime(datetime.strptime(TARGET['end_datetime'], TARGET['date_pattern']).timetuple())
+print("Calculating the flight position at each minute...")
+dirpath = os.path.join('', TARGET['output_folder'])
+if os.path.exists(dirpath) and os.path.isdir(dirpath):
+    shutil.rmtree(dirpath)
+os.mkdir(TARGET['output_folder'])
 
-print("Constructing the route paths in one column...")
-scaling_df = scaling_df.withColumn("ROUTE_PATH", concat_ws("->", "ORIGIN_AIRPORT_SEQ_ID", "DEST_AIRPORT_SEQ_ID"))
-print("Remaining rows: ", scaling_df.count())
+area_map = Basemap(llcrnrlon=-180, llcrnrlat=-90, urcrnrlon=180, urcrnrlat=90, lat_ts=0, resolution='l')  #Basemap(llcrnrlon=-180, llcrnrlat=-90, urcrnrlon=180, urcrnrlat=90, lat_ts=0, resolution='l')
 
-print("Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...")
-all_routes = []
-area_map = Basemap(llcrnrlon=-109, llcrnrlat=37, urcrnrlon=-102, urcrnrlat=41, lat_ts=0, resolution='l')
+position_information = {}
+
+route_information = {}
+
+for current_time in range(from_date, to_date+1, 1):
+    position_information[current_time] = []
+
+route_scaling_id = 1
+
 for row in scaling_df.rdd.collect():
+    origin_airport = row.ORIGIN
+    destination_airport = row.DEST
+    origin_city = row.ORIGIN_CITY_NAME
+    dest_city = row.DEST_CITY_NAME
     origin_lon = row.ORIGIN_LONGITUDE
     origin_lat = row.ORIGIN_LATITUDE
     destination_lat = row.DEST_LATITUDE
     destination_lon = row.DEST_LONGITUDE
-    distance_in_miles = row.DISTANCE
-    air_time_in_minutes = row.AIR_TIME
-    wheels_off_utc_datetime = row.WHEELS_OFF_UTC_DATETIME
+    wheels_off_utc_datetime = round(time.mktime(datetime.strptime(str(row.WHEELS_OFF_UTC_DATETIME), TARGET['date_pattern']).timetuple())/60)
+    wheels_on_utc_datetime = round(time.mktime(datetime.strptime(str(row.WHEELS_ON_UTC_DATETIME), TARGET['date_pattern']).timetuple())/60)
+    flight_start_time = wheels_off_utc_datetime-2
+    flight_end_time = wheels_on_utc_datetime+2
+    airtime_in_minutes = (flight_end_time - flight_start_time)
     
-    Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat,(distance_in_miles/40)+1)
-    inside_lon_array = []
-    inside_lat_array = []
-    time_array = []
+    if airtime_in_minutes < 10:
+      continue
+   
+    Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, airtime_in_minutes)
 
-    time_increase_rate = (air_time_in_minutes*60)/((distance_in_miles/40)+1)
-    start_time = datetime.strptime(str(wheels_off_utc_datetime), '%Y-%m-%d %H:%M:%S')
-    current_time = int(start_time.strftime("%s"))
+    route_details = {
+        'origin_lat': origin_lat, 
+        'origin_lon': origin_lon, 
+        'destination_lat': destination_lat, 
+        'destination_lon': destination_lon,
+        'origin_airport': origin_airport,
+        'destination_airport': destination_airport,
+        'origin_city': origin_city,
+        'dest_city': dest_city
+    }
 
-    for i in range(len(Longs)):
-        LAT = float(Lats[i])
-        LON = float(Longs[i])
-        
-        if LON < -102 and LON > -109 and LAT < 41 and LAT > 37:
-           inside_lon_array.append(LON)
-           inside_lat_array.append(LAT)
-           time_array.append(current_time)
-        current_time += time_increase_rate
+    route_information[route_scaling_id] = route_details
 
-    if (len(inside_lon_array) == 0 or len(inside_lat_array) == 0 or len(time_array) == 0):
-       result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon, 'is_in_area': 'OUTSIDE'}
-    elif (time_array[0] < from_date and time_array[len(time_array)-1] < from_date) or (time_array[0] > to_date and time_array[len(time_array)-1] > to_date):
-       result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon, 'is_in_area': 'OUTSIDE'}
-    else:
-       result = {'origin_lat': origin_lat, 'origin_lon': origin_lon, 'dest_lat': destination_lat, 'dest_lon': destination_lon,
-                 'entry_lon': inside_lon_array[0],
-                 'entry_lat': inside_lat_array[0],
-                 'exit_lon': inside_lon_array[len(inside_lon_array)-1],
-                 'exit_lat': inside_lat_array[len(inside_lat_array)-1],
-                 'entry_time': time_array[0],
-                 'exit_time': time_array[len(time_array)-1],
-                 'is_in_area': 'INSIDE'}
-       result['route'] = row.ROUTE_PATH
-       all_routes.append(result)
+    for current_time in range(flight_start_time, flight_end_time, 1):
+        if current_time >= from_date and current_time <= to_date:
+            current_position = {
+               'route_scaling_id': route_scaling_id,
+               'longitude': Longs[current_time-flight_start_time-1], 
+               'latitude':  Lats[current_time-flight_start_time-1]
+            }
+            position_information[current_time].append(current_position)
+    
+    route_scaling_id += 1
 
-print("Number of processed routes: ", len(all_routes))
+print("Saving the route information...")
+with open(TARGET['output_folder']+'/'+'route_information.json', 'w') as outfile:
+    json.dump(route_information, outfile)
 
-with open(TARGET['output_filename'] + '.json', 'w') as outfile:
-    json.dump(all_routes, outfile)
+print("Saving the position_information...")
+with open(TARGET['output_folder']+'/'+'position_information.json', 'w') as outfile:
+    json.dump(position_information, outfile)
 
 now = datetime.now()
 print("Simulation finished at: ", now)

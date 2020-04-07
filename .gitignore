@@ -18,5 +18,5 @@ bin-release/
 # information for Eclipse / Flash Builder.
 /data
 /2_scaling_and_simulation/prepared_data
-/2_scaling_and_simulation/simulated_data_*
+/2_scaling_and_simulation/simulated-data*
 /machine_learning/dataset_with_categorized_delays

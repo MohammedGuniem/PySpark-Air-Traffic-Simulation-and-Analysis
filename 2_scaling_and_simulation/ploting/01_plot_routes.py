@@ -34,7 +34,7 @@ with open("../"+args.input_filename, 'r') as file:
             origin_lon = route['origin_lon']
             dest_lat = route['dest_lat']
             dest_lon = route['dest_lon']
-            longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],100)
+            longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],100.6)
             
             entry_times.append(route['entry_time'])
             exit_times.append(route['exit_time'])
