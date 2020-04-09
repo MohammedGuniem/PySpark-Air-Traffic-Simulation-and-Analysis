@@ -22,6 +22,21 @@ import shutil
 import imageio
 from cv2 import cv2
 import os
+import math
+
+def calculate_bearing(pointA, pointB):
+    if (type(pointA) != tuple) or (type(pointB) != tuple):
+        raise TypeError("Only tuples are supported as arguments")
+    lat1 = math.radians(pointA[0])
+    lat2 = math.radians(pointB[0])
+    diffLong = math.radians(pointB[1] - pointA[1])
+    x = math.sin(diffLong) * math.cos(lat2)
+    y = math.cos(lat1) * math.sin(lat2) - (math.sin(lat1)
+            * math.cos(lat2) * math.cos(diffLong))
+    initial_bearing = math.atan2(x, y)
+    initial_bearing = math.degrees(initial_bearing)
+    compass_bearing = (initial_bearing + 360) % 360
+    return compass_bearing
 
 # Handle and process user input
 parser = argparse.ArgumentParser()
@@ -63,6 +78,7 @@ target_llcrnrlon = float(args.west) # West limit
 m = Basemap(llcrnrlon=(target_llcrnrlon),llcrnrlat=(target_llcrnrlat),urcrnrlon=(target_urcrnrlon),urcrnrlat=(target_urcrnrlat), lat_ts=0, resolution='h')
 
 
+
 for time in range(start_time, end_time+1, 1):
     flights = position_information[str(time)]
     fig = plt.figure(figsize = (15,8))
@@ -83,9 +99,17 @@ for time in range(start_time, end_time+1, 1):
             origin_lat = flight_information['origin_lat']
             dest_lon = flight_information['destination_lon']
             dest_lat = flight_information['destination_lat']
-            #flight_tag = flight_information['origin_city'] + "->" + flight_information['dest_city']
+            #flight_tag = flight_information['origin_city'] + "->" + flight_information['destination_city']
             flight_tag = flight_information['origin_airport'] + "->" + flight_information['destination_airport']
             
+            Points = {"Source":(origin_lat, origin_lon),"Destination":(dest_lat, dest_lon)}
+            Lon = [Points[key][0] for key in Points]
+            Lat = [Points[key][1] for key in Points]
+            X, Y = m(Lat,Lon)
+            longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],100)
+            plt.plot(longs,lats,color="#808080",linewidth=0.1)
+
+            bearing_angle = calculate_bearing((origin_lat,origin_lon),(dest_lat,dest_lon))
             # drawing inside routes - Black
             if (dest_lon <= target_urcrnrlon and dest_lon >= target_llcrnrlon and dest_lat <= target_urcrnrlat and dest_lat >= target_llcrnrlat) and \
                 (origin_lon <= target_urcrnrlon and origin_lon >= target_llcrnrlon and origin_lat <= target_urcrnrlat and origin_lat >= target_llcrnrlat):
@@ -119,7 +143,7 @@ for time in range(start_time, end_time+1, 1):
     plt.legend(handles=[inside_patch, incoming_patch, outgoing_patch, passing_patch])
     plt.savefig(output_path)
     plt.close()
-    plot_filenames.append(output_path)    
+    plot_filenames.append(output_path)
 
 # Making a .gif simulation
 images = []

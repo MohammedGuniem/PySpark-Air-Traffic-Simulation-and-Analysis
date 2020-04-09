@@ -1,37 +1,19 @@
-ubuntu@master:~/dat500_project/simulation$ spark-submit scale_and_simulate.py --start_datetime='2019-05-25 00:00:00' --end_datetime='2019-05-25 23:59:59' --output_filename='simulated_data_2019_05_25'
-20/03/28 12:44:39 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-Scaling started scaling at:  2020-03-28 12:44:40.666544
-Reading data...
-Remaining rows:  7264518
-Filter in respect to day of month -> keeping yesterday, today and tomorrow...
-Remaining rows:  4490246
-Remaining rows:  20210
-Scaling finished at:  2020-03-28 12:46:47.929712
-Simulation started at:  2020-03-28 12:46:47.929857
-Constructing the route paths in one column...
-Remaining rows:  20210
-Calculating the entry and exit points along with utc time for each of them and if the route passes through the area or not...
-Number of processed routes:  2483
-Simulation finished at:  2020-03-28 12:48:06.115657
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-duration: 3.43 minutes
-
-
-
-
-ubuntu@master:~/dat500_project/2_scaling_and_simulation$ python scale_and_simulate_new2.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated_data"
-Scaling started scaling at:  2020-04-07 15:41:18.212422
-20/04/07 15:41:20 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+ubuntu@master:~/dat500_project/2_scaling_and_simulation$ python scale_and_simulate.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="TEST"
+Scaling started scaling at:  2020-04-09 10:57:43.796307
+20/04/09 10:57:46 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+20/04/09 10:57:48 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
 Reading data...
 Remaining rows:  7264518
 Filter in respect to day of month -> keeping yesterday, today and tomorrow...
 Remaining rows:  5389274
 Remaining rows:  21546
-Scaling finished at:  2020-04-07 15:47:55.012872
-Simulation started at:  2020-04-07 15:47:55.016628
+Scaling finished at:  2020-04-09 11:10:09.687907
+Simulation started at:  2020-04-09 11:10:09.688149
 Calculating the flight position at each minute...
 Saving the route information...
 Saving the position_information...
-Simulation finished at:  2020-04-07 15:50:15.656848
+Simulation finished at:  2020-04-09 11:12:57.029534
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+duration: around 16 minutes

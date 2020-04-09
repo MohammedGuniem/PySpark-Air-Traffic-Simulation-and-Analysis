@@ -100,7 +100,14 @@ for row in scaling_df.rdd.collect():
         'origin_airport': origin_airport,
         'destination_airport': destination_airport,
         'origin_city': origin_city,
-        'dest_city': dest_city
+        'destination_city': dest_city,
+        'origin_state': origin_city,
+        'destination_state': dest_city,
+        'airtime_in_minutes': airtime_in_minutes,
+        'distance_in_miles': row.DISTANCE,
+        'flight_date': row.FL_DATE,
+        'wheels_off_utc_datetime': row.WHEELS_OFF_UTC_DATETIME,
+        'wheels_on_utc_datetime': row.WHEELS_ON_UTC_DATETIME
     }
 
     route_information[route_scaling_id] = route_details
