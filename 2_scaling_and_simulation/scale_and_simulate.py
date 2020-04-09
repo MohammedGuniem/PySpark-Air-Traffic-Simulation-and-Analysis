@@ -70,9 +70,8 @@ route_information = {}
 for current_time in range(from_date, to_date+1, 1):
     position_information[current_time] = []
 
-route_scaling_id = 1
-
 for row in scaling_df.rdd.collect():
+    tail_number = row.TAIL_NUM
     origin_airport = row.ORIGIN
     destination_airport = row.DEST
     origin_city = row.ORIGIN_CITY_NAME
@@ -105,23 +104,20 @@ for row in scaling_df.rdd.collect():
         'destination_state': dest_city,
         'airtime_in_minutes': airtime_in_minutes,
         'distance_in_miles': row.DISTANCE,
-        'flight_date': row.FL_DATE,
-        'wheels_off_utc_datetime': row.WHEELS_OFF_UTC_DATETIME,
-        'wheels_on_utc_datetime': row.WHEELS_ON_UTC_DATETIME
+        'wheels_off_utc_datetime': datetime.strptime(str(row.WHEELS_OFF_UTC_DATETIME), TARGET['date_pattern']).timetuple(),
+        'wheels_on_utc_datetime': datetime.strptime(str(row.WHEELS_ON_UTC_DATETIME), TARGET['date_pattern']).timetuple()
     }
 
-    route_information[route_scaling_id] = route_details
+    route_information[tail_number] = route_details
 
     for current_time in range(flight_start_time, flight_end_time, 1):
         if current_time >= from_date and current_time <= to_date:
             current_position = {
-               'route_scaling_id': route_scaling_id,
+               'tail_number': tail_number,
                'longitude': Longs[current_time-flight_start_time-1], 
                'latitude':  Lats[current_time-flight_start_time-1]
             }
             position_information[current_time].append(current_position)
-    
-    route_scaling_id += 1
 
 print("Saving the route information...")
 with open(TARGET['output_folder']+'/'+'route_information.json', 'w') as outfile:
