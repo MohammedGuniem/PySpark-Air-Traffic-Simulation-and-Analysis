@@ -1,6 +1,6 @@
 # scale_and_simulate_new.py
 # To run this script, tray the following example
-# python scale_and_simulate_new2.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated-data-2019-04-10"
+# python scale_and_simulate.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated-data-2019-04-10"
 
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
