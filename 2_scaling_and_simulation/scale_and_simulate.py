@@ -61,7 +61,7 @@ if os.path.exists(dirpath) and os.path.isdir(dirpath):
     shutil.rmtree(dirpath)
 os.mkdir(TARGET['output_folder'])
 
-area_map = Basemap(llcrnrlon=-180, llcrnrlat=-90, urcrnrlon=180, urcrnrlat=90, lat_ts=0, resolution='l')  #Basemap(llcrnrlon=-180, llcrnrlat=-90, urcrnrlon=180, urcrnrlat=90, lat_ts=0, resolution='l')
+area_map = Basemap(llcrnrlon=-180, llcrnrlat=-90, urcrnrlon=180, urcrnrlat=90, lat_ts=0, resolution='l')
 
 position_information = {}
 
@@ -100,8 +100,8 @@ for row in scaling_df.rdd.collect():
         'destination_airport': destination_airport,
         'origin_city': origin_city,
         'destination_city': dest_city,
-        'origin_state': origin_city,
-        'destination_state': dest_city,
+        'origin_state': row.ORIGIN_STATE_NM,
+        'destination_state': row.DEST_STATE_NM,
         'airtime_in_minutes': airtime_in_minutes,
         'distance_in_miles': row.DISTANCE,
         'wheels_off_utc_datetime': datetime.strptime(str(row.WHEELS_OFF_UTC_DATETIME), TARGET['date_pattern']).timetuple(),

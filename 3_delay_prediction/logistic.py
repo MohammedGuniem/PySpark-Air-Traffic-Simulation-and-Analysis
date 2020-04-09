@@ -60,7 +60,7 @@ piplineModel = pipeline.fit(train)
 
 prediction = piplineModel.transform(test)
 predicted = prediction.select("features", "prediction", "label")
-predicted.show(10, truncate=False)
+predicted.show(5, truncate=False)
 TN = prediction.filter('prediction = 0 AND label = prediction').count()
 TP = prediction.filter('prediction = 1 AND label = prediction').count()
 FN = prediction.filter('prediction = 0 AND label <> prediction').count()
@@ -69,19 +69,55 @@ print(' True Negative: %0.3f' % TN)
 print(' True Positive: %0.3f' % TP)
 print(' False Negative: %0.3f' % FN)
 print(' False Positive: %0.3f' % FP)
+
+accuracy = (TN + TP) / (TN + TP + FN + FP)
+precision = TP / (TP + FP)
+recall = TP / (TP + FN)
+F =  2 * (precision*recall) / (precision + recall)
+print(' precision: %0.3f' % precision)
+print(' recall: %0.3f' % recall)
+print(' accuracy: %0.3f' % accuracy)
+print(' F1 score: %0.3f' % F)
+
 evaluator = BinaryClassificationEvaluator(labelCol="label", rawPredictionCol="rawPrediction", metricName="areaUnderROC")
 aur = evaluator.evaluate(prediction)
 print ("AUR = ", aur)
 
 
 
+paramGrid = ParamGridBuilder().addGrid(lr.regParam, [0.3, 0.1]).addGrid(lr.maxIter, [10, 5]).addGrid(lr.threshold, 
+                                                                                            [0.4, 0.3]).build()
+cv = CrossValidator(estimator=pipeline, evaluator=BinaryClassificationEvaluator(), estimatorParamMaps=paramGrid, 
+                    numFolds=2)
+
+model = cv.fit(train)
+
+newprediction = model.transform(test)
+newPredicted = prediction.select("features", "prediction", "label")
+newPredicted.show(50)
 
 
+TN = newprediction.filter('prediction = 0 AND label = prediction').count()
+TP = newprediction.filter('prediction = 1 AND label = prediction').count()
+FN = newprediction.filter('prediction = 0 AND label <> prediction').count()
+FP = newprediction.filter('prediction = 1 AND label <> prediction').count()
+print(' True Negative: %0.3f' % TN)
+print(' True Positive: %0.3f' % TP)
+print(' False Negative: %0.3f' % FN)
+print(' False Positive: %0.3f' % FP)
 
+accuracy = (TN + TP) / (TN + TP + FN + FP)
+precision = TP / (TP + FP)
+recall = TP / (TP + FN)
+F =  2 * (precision*recall) / (precision + recall)
+print(' precision: %0.3f' % precision)
+print(' recall: %0.3f' % recall)
+print(' accuracy: %0.3f' % accuracy)
+print(' F1 score: %0.3f' % F)
 
-
-
-
+evaluator2 = BinaryClassificationEvaluator(labelCol="label", rawPredictionCol="rawPrediction", metricName="areaUnderROC")
+aur = evaluator2.evaluate(prediction)
+print ("AUR2 = ", aur)
 
 
 
