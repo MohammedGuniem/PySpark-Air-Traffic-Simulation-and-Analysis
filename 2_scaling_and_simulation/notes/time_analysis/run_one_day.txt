@@ -1,19 +1,19 @@
-ubuntu@master:~/dat500_project/2_scaling_and_simulation$ python scale_and_simulate.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="TEST"
-Scaling started scaling at:  2020-04-09 10:57:43.796307
-20/04/09 10:57:46 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+ubuntu@master:~/dat500_project/2_scaling_and_simulation$ python scale_and_simulate.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated-data-2019-04-10"
+Scaling started scaling at:  2020-04-09 13:23:44.286527
+20/04/09 13:23:59 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Setting default log level to "WARN".
 To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
-20/04/09 10:57:48 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+20/04/09 13:24:00 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
 Reading data...
 Remaining rows:  7264518
 Filter in respect to day of month -> keeping yesterday, today and tomorrow...
 Remaining rows:  5389274
 Remaining rows:  21546
-Scaling finished at:  2020-04-09 11:10:09.687907
-Simulation started at:  2020-04-09 11:10:09.688149
+Scaling finished at:  2020-04-09 13:29:52.686715
+Simulation started at:  2020-04-09 13:29:52.687060
 Calculating the flight position at each minute...
 Saving the route information...
 Saving the position_information...
-Simulation finished at:  2020-04-09 11:12:57.029534
+Simulation finished at:  2020-04-09 13:31:53.824345
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
-duration: around 16 minutes
+duration: around 8 minutes

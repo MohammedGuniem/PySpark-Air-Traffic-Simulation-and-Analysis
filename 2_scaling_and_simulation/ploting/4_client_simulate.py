@@ -1,13 +1,24 @@
 # To run an example of this script use this command
 
-# The state of Colorado
-# python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000" --keep_snapchat_images="0" --gif_duration=1
+"""
+# -> The state of Colorado
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
 
 # -> The State of New York
-# python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
 
 # -> All USA
-# python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
+python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
+"""
 
 from mpl_toolkits.basemap import Basemap
 from matplotlib import pyplot as plt
@@ -22,21 +33,6 @@ import shutil
 import imageio
 from cv2 import cv2
 import os
-import math
-
-def calculate_bearing(pointA, pointB):
-    if (type(pointA) != tuple) or (type(pointB) != tuple):
-        raise TypeError("Only tuples are supported as arguments")
-    lat1 = math.radians(pointA[0])
-    lat2 = math.radians(pointB[0])
-    diffLong = math.radians(pointB[1] - pointA[1])
-    x = math.sin(diffLong) * math.cos(lat2)
-    y = math.cos(lat1) * math.sin(lat2) - (math.sin(lat1)
-            * math.cos(lat2) * math.cos(diffLong))
-    initial_bearing = math.atan2(x, y)
-    initial_bearing = math.degrees(initial_bearing)
-    compass_bearing = (initial_bearing + 360) % 360
-    return compass_bearing
 
 # Handle and process user input
 parser = argparse.ArgumentParser()
@@ -50,9 +46,11 @@ parser.add_argument('--north', help='Enter the latitude of the upper right courn
 parser.add_argument('--south', help='Enter the latitude of the lower left courner of the target area, for example (37)')
 parser.add_argument('--east', help='Enter the longitude of the upper right courner of the target area, for example (-102)')
 parser.add_argument('--west', help='Enter the longitude of the lower left courner of the target area, for example (-109)')
+parser.add_argument('--tag', help='Possible tags are between states, cities, airport and tailnumber only, for example (AIRPORT) ')
 args = parser.parse_args()
 
-output_filename = args.output_filename
+tag = args.tag
+output_filename = "plots/"+args.output_filename
 start_time = round(time.mktime(datetime.strptime(args.start_datetime, '%Y-%m-%d %H:%M:%S').timetuple())/60)
 end_time = round(time.mktime(datetime.strptime(args.end_datetime, '%Y-%m-%d %H:%M:%S').timetuple())/60)
 gif_duration = args.gif_duration
@@ -94,22 +92,27 @@ for time in range(start_time, end_time+1, 1):
         if flight_lon >= target_llcrnrlon and flight_lon <= target_urcrnrlon \
             and flight_lat >= target_llcrnrlat and flight_lat <= target_urcrnrlat:
             
-            flight_information = route_information[str(flight['route_scaling_id'])]
+            flight_information = route_information[str(flight['tail_number'])]
             origin_lon = flight_information['origin_lon']
             origin_lat = flight_information['origin_lat']
             dest_lon = flight_information['destination_lon']
             dest_lat = flight_information['destination_lat']
-            #flight_tag = flight_information['origin_city'] + "->" + flight_information['destination_city']
-            flight_tag = flight_information['origin_airport'] + "->" + flight_information['destination_airport']
-            
+            if tag == "AIRPORT":
+                flight_tag = flight_information['origin_airport'] + "->" + flight_information['destination_airport']
+            elif tag == "CITY":
+                flight_tag = flight_information['origin_city'] + "->" + flight_information['destination_city']
+            elif tag == "STATE":
+                flight_tag = flight_information['origin_state'] + "->" + flight_information['destination_state']
+            elif tag == "TAIL_NUMBER":
+                flight_tag = flight['tail_number']
+                
             Points = {"Source":(origin_lat, origin_lon),"Destination":(dest_lat, dest_lon)}
             Lon = [Points[key][0] for key in Points]
             Lat = [Points[key][1] for key in Points]
             X, Y = m(Lat,Lon)
-            longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],100)
+            longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],flight_information['airtime_in_minutes'])
             plt.plot(longs,lats,color="#808080",linewidth=0.1)
 
-            bearing_angle = calculate_bearing((origin_lat,origin_lon),(dest_lat,dest_lon))
             # drawing inside routes - Black
             if (dest_lon <= target_urcrnrlon and dest_lon >= target_llcrnrlon and dest_lat <= target_urcrnrlat and dest_lat >= target_llcrnrlat) and \
                 (origin_lon <= target_urcrnrlon and origin_lon >= target_llcrnrlon and origin_lat <= target_urcrnrlat and origin_lat >= target_llcrnrlat):

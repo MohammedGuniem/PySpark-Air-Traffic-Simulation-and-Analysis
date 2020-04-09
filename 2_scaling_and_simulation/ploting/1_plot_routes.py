@@ -23,16 +23,16 @@ with open("../"+input_folder+"/route_information.json", 'r') as file:
     m.drawstates(linewidth = 0.2)
     m.drawcoastlines()
 
-    for flight_scaling_id, flight_information in route_information.items():
+    for tail_number, flight_information in route_information.items():
         Points = {"Source":(flight_information['origin_lat'],flight_information['origin_lon']),"Destination":(flight_information['destination_lat'],flight_information['destination_lon'])}
         Lon = [Points[key][0] for key in Points]
         Lat = [Points[key][1] for key in Points]
         X, Y = m(Lat,Lon)
         m.scatter(X,Y,zorder=5,s=1,color="#FF7F00",marker="^")
-        longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],100)
+        longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],flight_information['airtime_in_minutes'])
         plt.plot(longs,lats,color="#0000FF",linewidth=0.1)
 
 date = input_folder.split("-")
 date = date[2]+"-"+date[3]+"-"+date[4]
-plt.savefig("plot_images/1_all-routes-on-"+date+".png")
+plt.savefig("plots/plot_images/1_all-routes-on-"+date+".png")
 plt.close()

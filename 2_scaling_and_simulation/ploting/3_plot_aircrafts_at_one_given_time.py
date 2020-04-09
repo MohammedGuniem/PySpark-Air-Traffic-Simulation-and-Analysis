@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from datetime import datetime
 import argparse, sys
 import json
-import time 
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--input_folder', help='Enter the name of your input file which generated using pyspark, for example (simulated_data_2019_05_25.json)')
@@ -30,5 +30,5 @@ with open("../"+input_folder+"/position_information.json", 'r') as file:
     for flight_position in route_positions:
         m.scatter([flight_position['longitude']],[flight_position['latitude']],zorder=5,s=1,color="#0000FF",marker="^")
 
-plt.savefig("plot_images/3_all-routes-on-"+args.input_datetime.replace(" ","-").replace(":","")+".png")
+plt.savefig("plots/plot_images/3_all-routes-on-"+args.input_datetime.replace(" ","-").replace(":","")+".png")
 plt.close()

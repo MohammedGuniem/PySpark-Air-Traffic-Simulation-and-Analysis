@@ -31,15 +31,15 @@ with open("../"+input_folder+"/position_information.json", 'r') as file:
     route_positions = json.load(file)[str(time)]
 
     for flight_position in route_positions:
-        flight_information = route_information[str(flight_position['route_scaling_id'])]
+        flight_information = route_information[str(flight_position['tail_number'])]
         Points = {"Source":(flight_information['origin_lat'],flight_information['origin_lon']),"Destination":(flight_information['destination_lat'],flight_information['destination_lon'])}
         Lon = [Points[key][0] for key in Points]
         Lat = [Points[key][1] for key in Points]
         X, Y = m(Lat,Lon)
         m.scatter(X,Y,zorder=5,s=1,color="#FF7F00",marker="^")
-        longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],100)
+        longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],flight_information['airtime_in_minutes'])
         plt.plot(longs,lats,color="#0000FF",linewidth=0.1)
         
 
-plt.savefig("plot_images/2_all-routes-on-"+args.input_datetime.replace(" ","-").replace(":","")+".png")
+plt.savefig("plots/plot_images/2_all-routes-on-"+args.input_datetime.replace(" ","-").replace(":","")+".png")
 plt.close()
