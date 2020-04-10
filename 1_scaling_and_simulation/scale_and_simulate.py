@@ -42,7 +42,6 @@ print("Remaining rows: ", scaling_df.count())
 print("Filter in respect to day of month -> keeping yesterday, today and tomorrow... ")
 wheels_on_dates = (TARGET['start_datetime'], "2020-01-02 18:00:00")
 scaling_df = scaling_df.where(col('WHEELS_ON_UTC_DATETIME').between(*wheels_on_dates))
-print("Remaining rows: ", scaling_df.count())
 
 wheels_off_dates = ("2018-12-30 18:00:00", TARGET['end_datetime'])
 scaling_df = scaling_df.where(col('WHEELS_OFF_UTC_DATETIME').between(*wheels_off_dates))
@@ -82,14 +81,14 @@ for row in scaling_df.rdd.collect():
     destination_lon = row.DEST_LONGITUDE
     wheels_off_utc_datetime = round(time.mktime(datetime.strptime(str(row.WHEELS_OFF_UTC_DATETIME), TARGET['date_pattern']).timetuple())/60)
     wheels_on_utc_datetime = round(time.mktime(datetime.strptime(str(row.WHEELS_ON_UTC_DATETIME), TARGET['date_pattern']).timetuple())/60)
-    flight_start_time = wheels_off_utc_datetime-2
-    flight_end_time = wheels_on_utc_datetime+2
+    flight_start_time = wheels_off_utc_datetime
+    flight_end_time = wheels_on_utc_datetime
     airtime_in_minutes = (flight_end_time - flight_start_time)
     
     if airtime_in_minutes < 10:
       continue
    
-    Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, airtime_in_minutes)
+    Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, airtime_in_minutes+1)
 
     route_details = {
         'origin_lat': origin_lat, 

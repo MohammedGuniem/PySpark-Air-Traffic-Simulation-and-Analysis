@@ -51,61 +51,17 @@ onehot = OneHotEncoderEstimator(inputCols=[org_indexer.getOutputCol(),
 
 assembler = VectorAssembler(inputCols=['QUARTER','MONTH','ARR_DELAY','DEP_DELAY','DAY_OF_MONTH', 'DAY_OF_WEEK', 'TAXI_OUT', 'DISTANCE', 'OP_CARRIER_AIRLINE_ID', 'OP_CARRIER_FL_NUM', 'ORIGIN_AIRPORT_ID', 'ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_ID', 'DEST_AIRPORT_SEQ_ID', 'CRS_DEP_TIME', 'CRS_ARR_TIME', 'CARRIER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'WEATHER_DELAY', 'LATE_AIRCRAFT_DELAY', 'org_dummy', 'des_dummy', 'op_dummy', 'tail_dummy', 'origin_dummy', 'orgABR_dummy', 'orgNM_dummy', 'dest_dummy', 'destABR_dummy', 'destNM_dummy'],                                                                                                                                                                                    outputCol='features')  
 
+rf = RandomForestClassifier(labelCol='label', featuresCol='features', numTrees=30, maxDepth=30)
 
-
-pipeline = Pipeline(stages = [org_indexer, des_indexer, op_indexer, tail_indexer, origin_indexer, orgABR_indexer, orgNM_indexer, dest_indexer, destABR_indexer, destNM_indexer, onehot, assembler])
-
-pipelineModel = pipeline.fit(df)
-df = pipelineModel.transform(df)
-selectedCols = ['label', 'features'] + to_keep 
-df = df.select(selectedCols)
-
+pipeline = Pipeline(stages = [org_indexer, des_indexer, op_indexer, tail_indexer, origin_indexer, orgABR_indexer, orgNM_indexer, dest_indexer, destABR_indexer, destNM_indexer, onehot, assembler, rf])                                                                                                                                                 
 
 train, test = df.randomSplit([0.7, 0.3], seed = 2019)
-print("Training Dataset Count: " + str(train.count()))
-print("Test Dataset Count: " + str(test.count()))
-train = df
-rf = RandomForestClassifier(featuresCol = 'features', labelCol = 'label', maxDepth = 8, numTrees = 64)
-rfModel = rf.fit(train)
-prediction = rfModel.transform(test)
-prediction.select('label', 'rawPrediction', 'prediction', 'probability').show(10)
+piplineModel = pipeline.fit(train)
 
-evaluator = BinaryClassificationEvaluator()
-print("Test Area Under ROC: " + str(evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})))
-                                                                                               
-accuracy = evaluator.evaluate(prediction)
-print("Test Error = %g" % (1.0 - accuracy))
-prediction.groupBy('label', 'prediction').count().show()
-
-# Calculate the elements of the confusion matrix
-TN = prediction.filter('prediction = 0 AND label = prediction').count()
-TP = prediction.filter('prediction = 1 AND label = prediction').count()
-FN = prediction.filter('prediction = 0 AND label <> prediction').count()
-FP = prediction.filter('prediction = 1 AND label <> prediction').count()
-print(' True Negative: %0.3f' % TN)
-print(' True Positive: %0.3f' % TP)
-print(' False Negative: %0.3f' % FN)
-print(' False Positive: %0.3f' % FP)
-
-# calculate accuracy, precision, recall, and F1-score
-accuracy = (TN + TP) / (TN + TP + FN + FP)
-precision = TP / (TP + FP)
-recall = TP / (TP + FN)
-F =  2 * (precision*recall) / (precision + recall)
-print(' precision: %0.3f' % precision)
-print(' recall: %0.3f' % recall)
-print(' accuracy: %0.3f' % accuracy)
-print(' F1 score: %0.3f' % F)
-TPR = TP / (TP + FN)
-FPR = FP / (FP + TN)
-
-
-
-
-
-
-
-
-
-
+prediction = piplineModel.transform(test)
+predicted = prediction.select("features", "prediction", "label")
+predicted.show(5, truncate=False)
+evaluator = BinaryClassificationEvaluator(labelCol="label", rawPredictionCol="rawPrediction", metricName="areaUnderROC")
+aur = evaluator.evaluate(prediction)
+print ("AUR = ", aur)
                                                                                                                                                                                                                                
