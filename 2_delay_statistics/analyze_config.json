@@ -1,0 +1,121 @@
+{
+    "data_source": "hdfs://master:9000/dataset/*.csv",
+    "analyze_targets": [
+        {
+            "description": "Analyzing delay times based on aircraft tail number as a target",
+            "target_column": "TAIL_NUM",
+            "target_type": "normal",
+            "target_name": "aircrafts",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/carrier_delay",
+                "local": "output_data/carrier_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on destination state as a target",
+            "target_column": "DEST_STATE_NM",
+            "target_type": "normal",
+            "target_name": "destination states",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/destination_state_delay",
+                "local": "output_data/destination_state_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on destination city as a target",
+            "target_column": "DEST_CITY_NAME",
+            "target_type": "normal",
+            "target_name": "destination cities",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/destination_city_delay",
+                "local": "output_data/destination_city_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on destination airport as a target",
+            "target_column": "DEST",
+            "target_type": "normal",
+            "target_name": "destination airports",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/destination_airport_delay",
+                "local": "output_data/destination_airport_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on origin state as a target",
+            "target_column": "ORIGIN_STATE_NM",
+            "target_type": "normal",
+            "target_name": "origin states",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/origin_state_delay",
+                "local": "output_data/origin_state_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on origin city as a target",
+            "target_column": "ORIGIN_CITY_NAME",
+            "target_type": "normal",
+            "target_name": "origin cities",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/origin_city_delay",
+                "local": "output_data/origin_city_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on origin airport as a target",
+            "target_column": "ORIGIN",
+            "target_type": "normal",
+            "target_name": "origin airports",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/origin_airport_delay",
+                "local": "output_data/origin_airport_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on route between 2 states as a target",
+            "target_column": "ROUTE_BETWEEN_STATES",
+            "target_type": "merged",
+            "target_components": ["ORIGIN_STATE_NM", "DEST_STATE_NM"],
+            "target_separator": " -> ",
+            "target_name": "routes between 2 states",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/route_between_2_states_delay",
+                "local": "output_data/route_between_2_states_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on route between 2 citites as a target",
+            "target_column": "ROUTE_BETWEEN_CITIES",
+            "target_type": "merged",
+            "target_components": ["ORIGIN_CITY_NAME", "DEST_CITY_NAME"],
+            "target_separator": " -> ",
+            "target_name": "routes between 2 cities",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/route_between_2_cities_delay",
+                "local": "output_data/route_between_2_cities_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on route between 2 airports as a target",
+            "target_column": "ROUTE_BETWEEN_AIRPORTS",
+            "target_type": "merged",
+            "target_components": ["ORIGIN", "DEST"],
+            "target_separator": " -> ",
+            "target_name": "routes between 2 airports",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/route_between_2_airports_delay",
+                "local": "output_data/route_between_2_airports_delay"
+            }
+        },
+        {
+            "description": "Analyzing delay times based on month as a target",
+            "target_column": "MONTH",
+            "target_type": "normal",
+            "target_name": "months",
+            "csv_writing_paths": {
+                "hdfs": "hdfs://master:9000/statistics/months_delay",
+                "local": "output_data/months_delay"
+            }
+        }
+    ]
+}
