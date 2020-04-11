@@ -71,6 +71,8 @@ for current_time in range(from_date, to_date+1, 1):
 
 for row in scaling_df.rdd.collect():
     tail_number = row.TAIL_NUM
+    flight_number = row.OP_CARRIER_FL_NUM
+    flight_id = str(tail_number) + "-" + str(flight_number)
     origin_airport = row.ORIGIN
     destination_airport = row.DEST
     origin_city = row.ORIGIN_CITY_NAME
@@ -91,6 +93,8 @@ for row in scaling_df.rdd.collect():
     Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, airtime_in_minutes+1)
 
     route_details = {
+        'tail_number': tail_number,
+        'flight_number': flight_number, 
         'origin_lat': origin_lat, 
         'origin_lon': origin_lon, 
         'destination_lat': destination_lat, 
@@ -107,12 +111,12 @@ for row in scaling_df.rdd.collect():
         'wheels_on_utc_datetime': datetime.strptime(str(row.WHEELS_ON_UTC_DATETIME), TARGET['date_pattern']).timetuple()
     }
 
-    route_information[tail_number] = route_details
+    route_information[flight_id] = route_details
 
     for current_time in range(flight_start_time, flight_end_time+1, 1):
         if current_time >= from_date and current_time <= to_date:
             current_position = {
-               'tail_number': tail_number,
+               'flight_id': flight_id,
                'longitude': Longs[current_time-flight_start_time], 
                'latitude':  Lats[current_time-flight_start_time]
             }
