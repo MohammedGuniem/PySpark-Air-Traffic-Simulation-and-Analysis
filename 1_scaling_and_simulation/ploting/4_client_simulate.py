@@ -93,7 +93,7 @@ for time in range(start_time, end_time+1, 1):
         flight_lon = flight['longitude']
         flight_lat = flight['latitude']
         if is_point_inside_area(target_urcrnrlat, target_llcrnrlat, target_urcrnrlon, target_llcrnrlon, flight_lat, flight_lon):
-            flight_information = route_information[str(flight['tail_number'])]
+            flight_information = route_information[flight['flight_id']]
             origin_lon = flight_information['origin_lon']
             origin_lat = flight_information['origin_lat']
             dest_lon = flight_information['destination_lon']
@@ -105,23 +105,11 @@ for time in range(start_time, end_time+1, 1):
             elif tag == "STATE":
                 flight_tag = flight_information['origin_state'] + "->" + flight_information['destination_state']
             elif tag == "TAIL_NUMBER":
-                flight_tag = flight['tail_number']
+                flight_tag = flight_information['tail_number']
                 
-            Points = {"Source":(origin_lat, origin_lon),"Destination":(dest_lat, dest_lon)}
-            Lat = [Points[key][0] for key in Points]
-            Lon = [Points[key][1] for key in Points]
-            X, Y = m(Lat,Lon)
-            longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],flight_information['airtime_in_minutes'])
+            longs, lats = m.gcpoints(origin_lon, origin_lat, dest_lon, dest_lat, flight_information['airtime_in_minutes'])
             plt.plot(longs,lats,color="#808080",linewidth=0.1)
-
-            if flight['tail_number'] == "N62895": 
-                print(dest_lat)
-                print(Lat[1])
-                print(dest_lon)
-                print(Lon[1])
-                print(flight_lat)
-                print(flight_lon)
-                sys.exit()
+               
             # drawing inside routes - Black
             if is_point_inside_area(target_urcrnrlat, target_llcrnrlat, target_urcrnrlon, target_llcrnrlon, origin_lat, origin_lon) and \
                 is_point_inside_area(target_urcrnrlat, target_llcrnrlat, target_urcrnrlon, target_llcrnrlon, dest_lat, dest_lon):

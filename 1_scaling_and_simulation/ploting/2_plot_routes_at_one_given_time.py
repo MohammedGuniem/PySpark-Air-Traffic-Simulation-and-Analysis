@@ -31,7 +31,7 @@ with open("../"+input_folder+"/position_information.json", 'r') as file:
     route_positions = json.load(file)[str(time)]
 
     for flight_position in route_positions:
-        flight_information = route_information[str(flight_position['tail_number'])]
+        flight_information = route_information[str(flight_position['flight_id'])]
         Points = {"Source":(flight_information['origin_lat'],flight_information['origin_lon']),"Destination":(flight_information['destination_lat'],flight_information['destination_lon'])}
         Lon = [Points[key][0] for key in Points]
         Lat = [Points[key][1] for key in Points]

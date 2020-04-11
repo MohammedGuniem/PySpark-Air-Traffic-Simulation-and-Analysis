@@ -23,7 +23,7 @@ with open("../"+input_folder+"/route_information.json", 'r') as file:
     m.drawstates(linewidth = 0.2)
     m.drawcoastlines()
 
-    for tail_number, flight_information in route_information.items():
+    for flight_id, flight_information in route_information.items():
         Points = {"Source":(flight_information['origin_lat'],flight_information['origin_lon']),"Destination":(flight_information['destination_lat'],flight_information['destination_lon'])}
         Lon = [Points[key][0] for key in Points]
         Lat = [Points[key][1] for key in Points]
