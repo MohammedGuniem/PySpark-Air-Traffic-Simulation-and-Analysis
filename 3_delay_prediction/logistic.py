@@ -18,7 +18,7 @@ import pandas
 sc = SparkContext()
 sc.setLogLevel('FATAL')
 sqlContext = SQLContext(sc)
-print("Categorizing the delays from dataset")
+print("Logistic Regression classifier")
 df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true', nullValue=' ').load("hdfs://master:9000/dataset/*.csv")
 to_keep = ["QUARTER","MONTH","DAY_OF_MONTH","DAY_OF_WEEK","TAXI_OUT", "DEP_DELAY","ARR_DELAY","OP_UNIQUE_CARRIER","OP_CARRIER_AIRLINE_ID","TAIL_NUM","OP_CARRIER_FL_NUM","ORIGIN_AIRPORT_ID","ORIGIN_AIRPORT_SEQ_ID","ORIGIN","ORIGIN_CITY_NAME","ORIGIN_STATE_ABR","ORIGIN_STATE_NM","DEST_AIRPORT_ID","DEST_AIRPORT_SEQ_ID","DEST","DEST_CITY_NAME","DEST_STATE_ABR","DEST_STATE_NM","CRS_DEP_TIME","CRS_ARR_TIME","CRS_ELAPSED_TIME","DISTANCE","DISTANCE_GROUP","CARRIER_DELAY","WEATHER_DELAY","NAS_DELAY","SECURITY_DELAY","LATE_AIRCRAFT_DELAY"]                                 
 df = df.select(to_keep)

@@ -17,7 +17,7 @@ from pyspark.ml.evaluation import Evaluator
 sc = SparkContext()
 sc.setLogLevel('FATAL')
 sqlContext = SQLContext(sc)
-print("Random Classifier")
+print("Random  Forest Classifier")
 df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true', nullValue=' ').load("hdfs://master:9000/dataset/*.csv")
 to_keep = ["QUARTER","MONTH","TAXI_OUT","DAY_OF_MONTH","DAY_OF_WEEK","OP_UNIQUE_CARRIER","OP_CARRIER_AIRLINE_ID","TAIL_NUM","OP_CARRIER_FL_NUM","ARR_DELAY","DEP_DELAY","ORIGIN_AIRPORT_ID","ORIGIN_AIRPORT_SEQ_ID","ORIGIN","ORIGIN_CITY_NAME","ORIGIN_STATE_ABR","ORIGIN_STATE_NM","DEST_AIRPORT_ID","DEST_AIRPORT_SEQ_ID","DEST","DEST_CITY_NAME","DEST_STATE_ABR","DEST_STATE_NM","CRS_DEP_TIME","CRS_ARR_TIME","CRS_ELAPSED_TIME","DISTANCE","DISTANCE_GROUP","CARRIER_DELAY","WEATHER_DELAY","NAS_DELAY","SECURITY_DELAY","LATE_AIRCRAFT_DELAY"]                 
 df = df.select(to_keep)
@@ -49,7 +49,7 @@ onehot = OneHotEncoderEstimator(inputCols=[org_indexer.getOutputCol(),
                                            destNM_indexer.getOutputCol()],
                                 outputCols=['org_dummy', 'des_dummy', 'op_dummy', 'tail_dummy', 'origin_dummy', 'orgABR_dummy', 'orgNM_dummy', 'dest_dummy', 'destABR_dummy'                                          , 'destNM_dummy'])
 
-assembler = VectorAssembler(inputCols=['QUARTER','MONTH','ARR_DELAY','DEP_DELAY','DAY_OF_MONTH', 'DAY_OF_WEEK', 'TAXI_OUT', 'DISTANCE', 'OP_CARRIER_AIRLINE_ID', 'OP_CARRIER_FL_NUM', 'ORIGIN_AIRPORT_ID', 'ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_ID', 'DEST_AIRPORT_SEQ_ID', 'CRS_DEP_TIME', 'CRS_ARR_TIME', 'CARRIER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'WEATHER_DELAY', 'LATE_AIRCRAFT_DELAY', 'org_dummy', 'des_dummy', 'op_dummy', 'tail_dummy', 'origin_dummy', 'orgABR_dummy', 'orgNM_dummy', 'dest_dummy', 'destABR_dummy', 'destNM_dummy'],                                                                                                                                                                                    outputCol='features')  
+assembler = VectorAssembler(inputCols=['QUARTER','MONTH','ARR_DELAY','DEP_DELAY','DAY_OF_MONTH', 'DAY_OF_WEEK', 'TAXI_OUT', 'DISTANCE', 'OP_CARRIER_AIRLINE_ID', 'OP_CARRIER_FL_NUM', 'ORIGIN_AIRPORT_ID', 'ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_ID', 'DEST_AIRPORT_SEQ_ID', 'CRS_DEP_TIME', 'CRS_ARR_TIME', 'CARRIER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'WEATHER_DELAY', 'LATE_AIRCRAFT_DELAY', 'org_dummy', 'des_dummy', 'op_dummy', 'tail_dummy', 'origin_dummy', 'orgABR_dummy', 'orgNM_dummy', 'dest_dummy', 'destABR_dummy', 'destNM_dummy'],                                                                                            outputCol='features')  
 
 rf = RandomForestClassifier(labelCol='label', featuresCol='features', numTrees=3, maxDepth=30)
 
@@ -61,6 +61,24 @@ piplineModel = pipeline.fit(train)
 prediction = piplineModel.transform(test)
 predicted = prediction.select("features", "prediction", "label")
 predicted.show(5, truncate=False)
+TN = prediction.filter('prediction = 0 AND label = prediction').count()
+TP = prediction.filter('prediction = 1 AND label = prediction').count()
+FN = prediction.filter('prediction = 0 AND label <> prediction').count()
+FP = prediction.filter('prediction = 1 AND label <> prediction').count()
+print(' True Negative: %0.3f' % TN)
+print(' True Positive: %0.3f' % TP)
+print(' False Negative: %0.3f' % FN)
+print(' False Positive: %0.3f' % FP)
+
+accuracy = (TN + TP) / (TN + TP + FN + FP)
+precision = TP / (TP + FP)
+recall = TP / (TP + FN)
+F =  2 * (precision*recall) / (precision + recall)
+print(' precision: %0.3f' % precision)
+print(' recall: %0.3f' % recall)
+print(' accuracy: %0.3f' % accuracy)
+print(' F1 score: %0.3f' % F)
+
 evaluator = BinaryClassificationEvaluator(labelCol="label", rawPredictionCol="rawPrediction", metricName="areaUnderROC")
 aur = evaluator.evaluate(prediction)
 print ("AUR = ", aur)

@@ -69,6 +69,7 @@ route_information = {}
 for current_time in range(from_date, to_date+1, 1):
     position_information[current_time] = []
 
+increasing_row_id = 0
 for row in scaling_df.rdd.collect():
     tail_number = row.TAIL_NUM
     flight_number = row.OP_CARRIER_FL_NUM
@@ -90,6 +91,7 @@ for row in scaling_df.rdd.collect():
     if airtime_in_minutes < 10:
       continue
    
+    increasing_row_id += 1
     Longs, Lats = area_map.gcpoints(origin_lon, origin_lat, destination_lon, destination_lat, airtime_in_minutes+1)
 
     route_details = {
@@ -111,16 +113,18 @@ for row in scaling_df.rdd.collect():
         'wheels_on_utc_datetime': datetime.strptime(str(row.WHEELS_ON_UTC_DATETIME), TARGET['date_pattern']).timetuple()
     }
 
-    route_information[flight_id] = route_details
+    route_information[increasing_row_id] = route_details
 
     for current_time in range(flight_start_time, flight_end_time+1, 1):
         if current_time >= from_date and current_time <= to_date:
             current_position = {
-               'flight_id': flight_id,
+               'flight_id': increasing_row_id,
                'longitude': Longs[current_time-flight_start_time], 
                'latitude':  Lats[current_time-flight_start_time]
             }
             position_information[current_time].append(current_position)
+
+print("Remaining rows: ", str(increasing_row_id))
 
 print("Saving the route information...")
 with open(TARGET['output_folder']+'/'+'route_information.json', 'w') as outfile:

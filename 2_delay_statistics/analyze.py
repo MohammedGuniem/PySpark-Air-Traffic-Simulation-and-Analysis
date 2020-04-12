@@ -3,6 +3,7 @@ from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
 from pyspark.sql.functions import col, array_contains, size, first, sum as _sum, mean as _mean, max as _max, min as _min, desc, asc, count, concat_ws
 from pyspark.sql import SQLContext
+from datetime import datetime
 
 config_file = open("analyze_config.json")
 config = json.load(config_file)
@@ -27,8 +28,9 @@ for target in config["analyze_targets"]:
     target_name = target["target_name"]
     hdfs_csv_writing_paths = target["csv_writing_paths"]["hdfs"]
     local_csv_writing_paths = target["csv_writing_paths"]["local"]
-
-    print("Started: " + description)
+    
+    now = datetime.now()
+    print("Started: ", description, " at ", now)
 
     delay_df = df.withColumn("TOTAL_DELAY", col("WEATHER_DELAY")+col("CARRIER_DELAY")+col('NAS_DELAY')+col('SECURITY_DELAY')+col('LATE_AIRCRAFT_DELAY'))
 
@@ -59,9 +61,11 @@ for target in config["analyze_targets"]:
     print("The total number of " + target_name + " in dataset is: " + str(delay_df.count()))
 
     print("Writing csv file on hdfs ...")
-    delay_df.repartition(1).write.csv(hdfs_csv_writing_paths)
+#    delay_df.repartition(1).write.csv(hdfs_csv_writing_paths)
 
     print("Writing csv file on local machine ...")
     delay_df.repartition(1).write.csv(local_csv_writing_paths, header = 'true')
+  
+    now = datetime.now()
+    print("Done: ", description, " at ", now)
 
-    print("Done: " + description)

@@ -33,11 +33,11 @@ def colToString(num):
 
 myUdf = udf(colToString, StringType())
 
-B.withColumn("category", myUdf('TOTAL')).show()
+B.withColumn("category", myUdf('TOTAL')).show(10)
 
 C = B.withColumn("STATUS", F.when(F.col('TOTAL') > 15, "Delayed").otherwise("Not Delayed"))
 
-C.show()
+C.show(10)
 
 C.groupBy("STATUS").count().show()
 

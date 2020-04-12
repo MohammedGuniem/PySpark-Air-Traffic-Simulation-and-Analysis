@@ -4,7 +4,7 @@ from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import StringIndexer, VectorIndexer, OneHotEncoderEstimator
 from pyspark.ml.regression import LinearRegression
-from pyspark.ml.classification import LogisticRegression, RandomForestClassifier
+from pyspark.ml.classification import LogisticRegression, RandomForestClassifier, GBTClassifier
 from pyspark.sql.functions import col, collect_set, array_contains, size, first, sum as _sum, mean as _mean, desc, asc, count, concat_ws, udf
 from pyspark.ml.stat import Correlation
 from pyspark.ml.feature import VectorAssembler
@@ -12,16 +12,13 @@ import sys,numpy as np
 from pyspark.ml.tuning import CrossValidator, ParamGridBuilder
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.ml.evaluation import Evaluator
-from pyspark.mllib.evaluation import BinaryClassificationMetrics as metric
-
+import pandas
 
 sc = SparkContext()
 sc.setLogLevel('FATAL')
 sqlContext = SQLContext(sc)
-print("Starting decision Tree classifier")
-
+print("Logistic Regression classifier")
 df = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true', nullValue=' ').load("hdfs://master:9000/dataset/*.csv")
-
 to_keep = ["QUARTER","MONTH","DAY_OF_MONTH","DAY_OF_WEEK","TAXI_OUT", "DEP_DELAY","ARR_DELAY","OP_UNIQUE_CARRIER","OP_CARRIER_AIRLINE_ID","TAIL_NUM","OP_CARRIER_FL_NUM","ORIGIN_AIRPORT_ID","ORIGIN_AIRPORT_SEQ_ID","ORIGIN","ORIGIN_CITY_NAME","ORIGIN_STATE_ABR","ORIGIN_STATE_NM","DEST_AIRPORT_ID","DEST_AIRPORT_SEQ_ID","DEST","DEST_CITY_NAME","DEST_STATE_ABR","DEST_STATE_NM","CRS_DEP_TIME","CRS_ARR_TIME","CRS_ELAPSED_TIME","DISTANCE","DISTANCE_GROUP","CARRIER_DELAY","WEATHER_DELAY","NAS_DELAY","SECURITY_DELAY","LATE_AIRCRAFT_DELAY"]
 df = df.select(to_keep)
 df = df.dropna()
@@ -53,34 +50,15 @@ onehot = OneHotEncoderEstimator(inputCols=[org_indexer.getOutputCol(),
                                 outputCols=['org_dummy', 'des_dummy', 'op_dummy', 'tail_dummy', 'origin_dummy', 'orgABR_dummy', 'orgNM_dummy', 'dest_dummy', 'destABR_dummy'                                          , 'destNM_dummy'])
 
 assembler = VectorAssembler(inputCols=['QUARTER','MONTH','ARR_DELAY','DEP_DELAY','DAY_OF_MONTH', 'DAY_OF_WEEK', 'TAXI_OUT', 'DISTANCE', 'OP_CARRIER_AIRLINE_ID', 'OP_CARRIER_FL_NUM', 'ORIGIN_AIRPORT_ID', 'ORIGIN_AIRPORT_SEQ_ID', 'DEST_AIRPORT_ID', 'DEST_AIRPORT_SEQ_ID', 'CRS_DEP_TIME', 'CRS_ARR_TIME', 'CARRIER_DELAY', 'NAS_DELAY', 'SECURITY_DELAY', 'WEATHER_DELAY', 'LATE_AIRCRAFT_DELAY', 'org_dummy', 'des_dummy', 'op_dummy', 'tail_dummy', 'origin_dummy', 'orgABR_dummy', 'orgNM_dummy', 'dest_dummy', 'destABR_dummy', 'destNM_dummy'],                                                                                                                                                                                    outputCol='features')
-
-
-
 pipeline = Pipeline(stages = [org_indexer, des_indexer, op_indexer, tail_indexer, origin_indexer, orgABR_indexer, orgNM_indexer, dest_indexer, destABR_indexer, destNM_indexer, onehot, assembler])
-
 pipelineModel = pipeline.fit(df)
-df = pipelineModel.transform(df)                                                                                                                                                 
-train, test = df.randomSplit([0.7, 0.3], seed = 2019)
-dt = DecisionTreeClassifier(featuresCol = 'features', labelCol = 'label', impurity = 'entropy', maxBins = 1, maxDepth = 4)
-dtModel = dt.fit(train)
-prediction = dtModel.transform(test)
-prediction.select('label', 'rawPrediction', 'prediction', 'probability').show(5)
-TN = prediction.filter('prediction = 0 AND label = prediction').count()
-TP = prediction.filter('prediction = 1 AND label = prediction').count()
-FN = prediction.filter('prediction = 0 AND label <> prediction').count()
-FP = prediction.filter('prediction = 1 AND label <> prediction').count()
-print(' True Negative: %0.3f' % TN)
-print(' True Positive: %0.3f' % TP)
-print(' False Negative: %0.3f' % FN)
-print(' False Positive: %0.3f' % FP)
+df = pipelineModel.transform(df)
+train, test = df.randomSplit([0.7, 0.3], seed = 0)
 
-accuracy = (TN + TP) / (TN + TP + FN + FP)
-precision = TP / (TP + FP)
-recall = TP / (TP + FN)
-F =  2 * (precision*recall) / (precision + recall)
-print(' precision: %0.3f' % precision)
-print(' recall: %0.3f' % recall)
-print(' accuracy: %0.3f' % accuracy)
-print(' F1 score: %0.3f' % F)
+gbt = GBTClassifier(maxDepth = 3, maxIter = 10)
+gbtModel = gbt.fit(train)
+prediction = gbtModel.transform(test)
+prediction.select('label', 'rawPrediction', 'prediction', 'probability').show(5)
+
 evaluator = BinaryClassificationEvaluator()
-print("Test Area Under ROC: " + str(evaluator.evaluate(prediction, {evaluator.metricName: "areaUnderROC"})))
+print('Test Area Under ROC', evaluator.evaluate(prediction))
