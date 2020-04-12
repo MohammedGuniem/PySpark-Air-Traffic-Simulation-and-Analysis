@@ -56,17 +56,17 @@ end_time = round(time.mktime(datetime.strptime(args.end_datetime, '%Y-%m-%d %H:%
 gif_duration = args.gif_duration
 plot_filenames = []
 
-# Prepare output folder, delete if exists in order to update
-dirpath = os.path.join('', output_filename)
-if os.path.exists(dirpath) and os.path.isdir(dirpath):
-    shutil.rmtree(dirpath)
-os.mkdir(output_filename) 
-
 with open("../"+args.input_folder+"/route_information.json", 'r') as file:
     route_information = json.load(file)
 
 with open("../"+args.input_folder+"/position_information.json", 'r') as file:
     position_information = json.load(file)
+
+# Prepare output folder, delete if exists in order to update
+dirpath = os.path.join('', output_filename)
+if os.path.exists(dirpath) and os.path.isdir(dirpath):
+    shutil.rmtree(dirpath)
+os.mkdir(output_filename) 
 
 target_urcrnrlat = float(args.north) # North limit
 target_llcrnrlat = float(args.south) # South limit
@@ -93,7 +93,7 @@ for time in range(start_time, end_time+1, 1):
         flight_lon = flight['longitude']
         flight_lat = flight['latitude']
         if is_point_inside_area(target_urcrnrlat, target_llcrnrlat, target_urcrnrlon, target_llcrnrlon, flight_lat, flight_lon):
-            flight_information = route_information[flight['flight_id']]
+            flight_information = route_information[str(flight['flight_id'])]
             origin_lon = flight_information['origin_lon']
             origin_lat = flight_information['origin_lat']
             dest_lon = flight_information['destination_lon']
