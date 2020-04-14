@@ -1,6 +1,6 @@
 # scale_and_simulate_new.py
 # To run this script, tray the following example
-# python scale_and_simulate.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated-data-2019-04-10"
+# python scale.py --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 23:59:59" --output_folder="simulated-data-2019-04-10"
 
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
@@ -46,13 +46,6 @@ scaling_df = scaling_df.where(col('WHEELS_ON_UTC_DATETIME').between(*wheels_on_d
 wheels_off_dates = ("2018-12-30 18:00:00", TARGET['end_datetime'])
 scaling_df = scaling_df.where(col('WHEELS_OFF_UTC_DATETIME').between(*wheels_off_dates))
 print("Remaining rows: ", scaling_df.count())
-
-now = datetime.now()
-print("Scaling finished at: ", now)
-
-# Simulation
-now = datetime.now()
-print("Simulation started at: ", now)
 
 print("Calculating the flight position at each minute...")
 dirpath = os.path.join('', TARGET['output_folder'])
@@ -135,4 +128,4 @@ with open(TARGET['output_folder']+'/'+'position_information.json', 'w') as outfi
     json.dump(position_information, outfile)
 
 now = datetime.now()
-print("Simulation finished at: ", now)
+print("Scaling finished at: ", now)

@@ -56,12 +56,12 @@ for target in config["analyze_targets"]:
     
     delay_df = delay_df.withColumnRenamed(target_column, target_column.replace("_", " "))
 
-    delay_df.show(showRowCount, False)
+#    delay_df.show(showRowCount, False)
     
     print("The total number of " + target_name + " in dataset is: " + str(delay_df.count()))
 
     print("Writing csv file on hdfs ...")
-#    delay_df.repartition(1).write.csv(hdfs_csv_writing_paths)
+    delay_df.repartition(1).write.csv(hdfs_csv_writing_paths)
 
     print("Writing csv file on local machine ...")
     delay_df.repartition(1).write.csv(local_csv_writing_paths, header = 'true')
