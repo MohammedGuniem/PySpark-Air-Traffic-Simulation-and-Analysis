@@ -19,4 +19,3 @@ bin-release/
 /data
 /1_scaling_and_simulation/prepared_data
 /1_scaling_and_simulation/simulated-data*
-/machine_learning/dataset_with_categorized_delays
