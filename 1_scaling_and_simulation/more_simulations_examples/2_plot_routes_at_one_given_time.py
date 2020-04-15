@@ -1,5 +1,5 @@
 # To run an example of this script use this command
-# python 2_plot_routes_at_one_given_time.py --input_folder=simulated-data-2019-04-10 --input_datetime="2019-04-10 15:49:00"
+# python 2_plot_routes_at_one_given_time.py --input_folder=scaled_data_2019_04_10 --input_datetime="2019-04-10 15:49:00"
 
 from mpl_toolkits.basemap import Basemap
 from matplotlib import pyplot as plt
@@ -9,7 +9,7 @@ import json
 import time 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--input_folder', help='Enter the name of your input file which generated using pyspark, for example (simulated_data_2019_05_25.json)')
+parser.add_argument('--input_folder', help='Enter the name of your input file which generated using pyspark, for example (scaled_data_2019_04_10)')
 parser.add_argument('--input_datetime', help='Enter one datetime in the simulation, for example (2019-05-25 18:00:00)')
 args = parser.parse_args()
 
@@ -41,5 +41,5 @@ with open("../"+input_folder+"/position_information.json", 'r') as file:
         plt.plot(longs,lats,color="#0000FF",linewidth=0.1)
         
 
-plt.savefig("plots/plot_images/2_all-routes-on-"+args.input_datetime.replace(" ","-").replace(":","")+".png")
+plt.savefig("plots/2_all_routes_on_"+args.input_datetime.replace(" ","_").replace(":","")+".png")
 plt.close()

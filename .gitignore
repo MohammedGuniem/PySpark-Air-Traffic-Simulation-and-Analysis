@@ -18,4 +18,4 @@ bin-release/
 # information for Eclipse / Flash Builder.
 /data
 /1_scaling_and_simulation/prepared_data
-/1_scaling_and_simulation/simulated-data*
+/1_scaling_and_simulation/scaled_data*

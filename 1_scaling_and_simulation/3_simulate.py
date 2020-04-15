@@ -2,22 +2,22 @@
 
 """
 # -> The state of Colorado
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="42" --south="36" --east="-101" --west="-110" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Colorado-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
 
 # -> The State of New York
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="46" --south="40" --east="-73" --west="-80" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="46" --south="40" --east="-73" --west="-80" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="46" --south="40" --east="-73" --west="-80" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="46" --south="40" --east="-73" --west="-80" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="46" --south="40" --east="-73" --west="-80" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_Newyork-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
 
 # -> All USA
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
-python 4_client_simulate.py --input_folder=simulated-data-2019-04-10 --north="50" --south="23" --east="-65" --west="-127" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="50" --south="23" --east="-65" --west="-127" --tag="AIRPORT" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-AIRPORT" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="50" --south="23" --east="-65" --west="-127" --tag="CITY" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-CITY" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="50" --south="23" --east="-65" --west="-127" --tag="STATE" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-STATE" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="50" --south="23" --east="-65" --west="-127" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
 """
 
 from mpl_toolkits.basemap import Basemap
@@ -36,10 +36,10 @@ import os
 
 # Handle and process user input
 parser = argparse.ArgumentParser()
-parser.add_argument('--input_folder', help='Enter the name of your input simulation data folder which is generated using pyspark, for example (simulated_data_10_04_2019)')
+parser.add_argument('--input_folder', help='Enter the name of your input simulation data folder which is generated using pyspark, for example (scaled_data_10_04_2019)')
 parser.add_argument('--start_datetime', help='Enter the start datetime of the simulation, for example (2019-05-25 18:00:00)')
 parser.add_argument('--end_datetime', help='Enter the end datetime of the simulation, for example (2019-05-25 18:00:00)')
-parser.add_argument('--output_filename', help='Enter the folder name where you would like to save your simulation, for example (simulation_1)')
+parser.add_argument('--output_filename', help='Enter the folder name where you would like to save your simulation, for example (4_Colorado-2019-04-10-from-180000-to-183000-AIRPORT)')
 parser.add_argument('--keep_snapchat_images', help='Choice wheather or not to delete the snapchat images of the simulation or not, for example (1) to keep and (0) to delete')
 parser.add_argument('--gif_duration', help='Enter the frame duration of each frame in the gif simulation, for example (0.5)')
 parser.add_argument('--north', help='Enter the latitude of the upper right courner of the target area, for example (41)')
@@ -50,16 +50,16 @@ parser.add_argument('--tag', help='Possible tags are between states, cities, air
 args = parser.parse_args()
 
 tag = args.tag
-output_filename = "plots/"+args.output_filename
+output_filename = "simulations/"+args.output_filename
 start_time = round(time.mktime(datetime.strptime(args.start_datetime, '%Y-%m-%d %H:%M:%S').timetuple())/60)
 end_time = round(time.mktime(datetime.strptime(args.end_datetime, '%Y-%m-%d %H:%M:%S').timetuple())/60)
 gif_duration = args.gif_duration
 plot_filenames = []
 
-with open("../"+args.input_folder+"/route_information.json", 'r') as file:
+with open(args.input_folder+"/route_information.json", 'r') as file:
     route_information = json.load(file)
 
-with open("../"+args.input_folder+"/position_information.json", 'r') as file:
+with open(args.input_folder+"/position_information.json", 'r') as file:
     position_information = json.load(file)
 
 # Prepare output folder, delete if exists in order to update

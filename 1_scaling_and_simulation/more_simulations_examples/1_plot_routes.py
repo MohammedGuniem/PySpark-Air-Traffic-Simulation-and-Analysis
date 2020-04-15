@@ -1,5 +1,5 @@
 # To run an example of this script use this command
-# python 1_plot_routes.py --input_folder=simulated-data-2019-04-10
+# python 1_plot_routes.py --input_folder=scaled_data_2019_04_10
 
 from mpl_toolkits.basemap import Basemap
 from matplotlib import pyplot as plt
@@ -8,7 +8,7 @@ import argparse, sys
 import json
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--input_folder', help='Enter the name of your input folder which generated using pyspark, for example (simulated-data-2019-04-10)')
+parser.add_argument('--input_folder', help='Enter the name of your input folder which generated using pyspark, for example (scaled_data_2019_04_10)')
 args = parser.parse_args()
 input_folder = args.input_folder
 
@@ -32,7 +32,7 @@ with open("../"+input_folder+"/route_information.json", 'r') as file:
         longs, lats = m.gcpoints(Lat[0],Lon[0],Lat[1],Lon[1],flight_information['airtime_in_minutes'])
         plt.plot(longs,lats,color="#0000FF",linewidth=0.1)
 
-date = input_folder.split("-")
-date = date[2]+"-"+date[3]+"-"+date[4]
-plt.savefig("plots/plot_images/1_all-routes-on-"+date+".png")
+date = input_folder.split("_")
+date = date[2]+"_"+date[3]+"_"+date[4]
+plt.savefig("plots/1_all_routes_on_"+date+".png")
 plt.close()
