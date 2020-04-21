@@ -20,6 +20,17 @@ python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="50" --south=
 python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="50" --south="23" --east="-65" --west="-127" --tag="TAIL_NUMBER" --start_datetime="2019-04-10 18:00:00" --end_datetime="2019-04-10 18:30:00" --output_filename="4_USA-2019-04-10-from-180000-to-183000-TAIL_NUMBER" --keep_snapchat_images="0" --gif_duration=1
 """
 
+"""
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 00:00:00" --end_datetime="2019-04-10 03:00:00" --output_filename="1" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 03:01:00" --end_datetime="2019-04-10 06:00:00" --output_filename="2" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 06:01:00" --end_datetime="2019-04-10 09:00:00" --output_filename="3" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 09:01:00" --end_datetime="2019-04-10 12:00:00" --output_filename="4" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 12:01:00" --end_datetime="2019-04-10 15:00:00" --output_filename="5" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 15:01:00" --end_datetime="2019-04-10 18:00:00" --output_filename="6" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 18:01:00" --end_datetime="2019-04-10 21:00:00" --output_filename="7" --keep_snapchat_images="0" --gif_duration=1
+python 3_simulate.py --input_folder=scaled_data_2019_04_10 --north="42" --south="36" --east="-101" --west="-110" --tag="AIRPORT" --start_datetime="2019-04-10 21:01:00" --end_datetime="2019-04-10 23:59:00" --output_filename="8" --keep_snapchat_images="0" --gif_duration=1
+"""
+
 from mpl_toolkits.basemap import Basemap
 from matplotlib import pyplot as plt
 from datetime import datetime
@@ -33,6 +44,10 @@ import shutil
 import imageio
 from cv2 import cv2
 import os
+
+startTime = datetime.now()
+
+UTC_local_variation = 120 # in minutes
 
 # Handle and process user input
 parser = argparse.ArgumentParser()
@@ -51,8 +66,8 @@ args = parser.parse_args()
 
 tag = args.tag
 output_filename = "simulations/"+args.output_filename
-start_time = round(time.mktime(datetime.strptime(args.start_datetime, '%Y-%m-%d %H:%M:%S').timetuple())/60)
-end_time = round(time.mktime(datetime.strptime(args.end_datetime, '%Y-%m-%d %H:%M:%S').timetuple())/60)
+start_time = round(time.mktime(datetime.strptime(args.start_datetime, '%Y-%m-%d %H:%M:%S').timetuple())/60)+UTC_local_variation
+end_time = round(time.mktime(datetime.strptime(args.end_datetime, '%Y-%m-%d %H:%M:%S').timetuple())/60)+UTC_local_variation
 gif_duration = args.gif_duration
 plot_filenames = []
 
@@ -107,7 +122,7 @@ for time in range(start_time, end_time+1, 1):
             elif tag == "TAIL_NUMBER":
                 flight_tag = flight_information['tail_number']
                 
-            longs, lats = m.gcpoints(origin_lon, origin_lat, dest_lon, dest_lat, flight_information['airtime_in_minutes'])
+            longs, lats = m.gcpoints(origin_lon, origin_lat, dest_lon, dest_lat, flight_information['airtime_in_minutes']+2)
             plt.plot(longs,lats,color="#808080",linewidth=0.1)
                
             # drawing inside routes - Black
@@ -134,7 +149,7 @@ for time in range(start_time, end_time+1, 1):
                     m.scatter([flight_lon],[flight_lat],zorder=5,s=50,color="#0000FF",marker="o")
                     plt.text(flight_lon, flight_lat, flight_tag, fontsize='smaller', color="#0000FF")
 
-    normal_datetime = datetime.fromtimestamp(time*60).strftime('%Y-%m-%d %H:%M:%S')
+    normal_datetime = datetime.fromtimestamp((time-UTC_local_variation)*60).strftime('%Y-%m-%d %H:%M:%S')
     output_path = output_filename+'/'+normal_datetime.replace(":","_").replace("-","_").replace(" ","_")+'.png'
     inside_patch = mpatches.Patch(color='#000000', label='Inside Routes')
     incoming_patch = mpatches.Patch(color='#006b1d', label='Incoming Routes')
@@ -170,3 +185,5 @@ if args.keep_snapchat_images == "0":
     for image in images:
         if image.endswith(".png"):
             os.remove(os.path.join(folder_path, image))
+
+print("Elapsed time: ", datetime.now() - startTime)
