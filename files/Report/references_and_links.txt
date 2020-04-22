@@ -39,3 +39,9 @@ https://en.wikipedia.org/wiki/Apache_Hadoop
 
 # Wikipedia about Apache Spark
 https://en.wikipedia.org/wiki/Apache_Spark
+
+# online tool used to vizualize json files
+http://jsonviewer.stack.hu/
+
+# Article about different type of aviation delays from the faa
+https://aspmhelp.faa.gov/index.php/Types_of_Delay
