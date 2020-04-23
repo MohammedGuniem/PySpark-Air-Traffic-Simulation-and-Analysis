@@ -26,19 +26,19 @@ https://stackoverflow.com/questions/44947505/how-to-make-a-movie-out-of-images-i
 
 ****************** Other Notes *********************
 # article about air traffic growth issued by IATA
-https://www.iata.org/en/pressroom/pr/2018-10-24-02/
+https://www.iata.org/en/pressroom/pr/2018-10-24-02/ -------------------- done
 
 # A delay report from the United States Joint Economic Committee
-https://www.jec.senate.gov/public/_cache/files/47e8d8a7-661d-4e6b-ae72-0f1831dd1207/yourflighthasbeendelayed0.pdf
+https://www.jec.senate.gov/public/_cache/files/47e8d8a7-661d-4e6b-ae72-0f1831dd1207/yourflighthasbeendelayed0.pdf -------------------- done
 
 # A report about spacious airspace
 https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20110015828.pdf
 
 # Wikipedia about Apache Hadoop
-https://en.wikipedia.org/wiki/Apache_Hadoop
+https://en.wikipedia.org/wiki/Apache_Hadoop -------------------- done
 
 # Wikipedia about Apache Spark
-https://en.wikipedia.org/wiki/Apache_Spark
+https://en.wikipedia.org/wiki/Apache_Spark -------------------- done
 
 # online tool used to vizualize json files
 http://jsonviewer.stack.hu/
