@@ -77,14 +77,11 @@ print("Count of rows after converting wheels on to utc time: ", scaling_df.count
 #print("Writing prepared data to local filesystem")
 #scaling_df.repartition(1).write.csv("prepared_data", header = 'true')
 
-#print("Writing prepared data to HDFS filesystem")
-#scaling_df.repartition(1).write.csv("hdfs://master:9000/scaling_and_simulation/prepared_data", header = 'true')
+print("Writing prepared data to HDFS filesystem")
+scaling_df.repartition(1).write.csv("hdfs://master:9000/scaling_and_simulation/prepared_data", header = 'true')
 
 print("Storing prepared data...")
 scaling_df.write.saveAsTable("prepared_data")
-
-
-
 
 now = datetime.now()
 print("Finished at: ", now)
