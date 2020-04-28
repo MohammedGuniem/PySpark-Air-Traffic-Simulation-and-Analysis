@@ -1,12 +1,21 @@
-# dat500_project code
+# Air Traffic scaling, delay- analysis and prediction using PySpark on Hadoop Cluster
 
-## To clone this repository to your local machine or hadoop master use the following command
+## To start running the code of this project you need to set up a cluster using Hadoop and Spark
+### Set up an Apache Hadoop cluster
+https://codethief.io/hadoop101/
 
-git clone https://github.com/MohammedGuniem/dat500_project.git
+### Set up an Apache Spark cluster
+https://medium.com/ymedialabs-innovation/apache-spark-on-a-multi-node-cluster-b75967c8cb2b
+
+### Install the mpl_toolkits.basemap package which is essential for scaling and simulation,
+https://askubuntu.com/questions/555474/problem-importing-a-module-mpl-toolkits-basemap-in-python
+
+### Install other packages
+by using the popular "pip install <pachkage_name>" command
 
 ## Run an example of Scaling and simulation
 
-Install the following prerequisted libraries:
+### Install the following prerequisted libraries:
 1- PySpark
 2- datetime
 3- time
@@ -43,7 +52,8 @@ The command "spark-submit" can also be used
 
 
 ## Run an example of Delay analysis
-Install the following prerequisted libraries:
+
+###Install the following prerequisted libraries:
 1- pyspark
 2- json
 3- datetime
@@ -62,17 +72,17 @@ vim analyze_json.json
 https://powerbi.microsoft.com/en-us/desktop/
 
 
-
 ## Run an example of Delay Prediction
-Install the following prerequisted libraries:
-1-
-2-
-3-
 
-### Run the script of Desicion Tree
+### Install the following prerequisted libraries:
+1- pyspark
+2- sys
+
+### Run the script of Decision Tree
+python descision_tree.py
 
 ### Run the script of Random Forests
+python random_forest.py
 
 ### Run the script of Logistic Regression
-
-
+python logistic.py
